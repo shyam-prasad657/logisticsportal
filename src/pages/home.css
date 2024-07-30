@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
+*{
+    box-sizing: border-box !important;
+    font-family: "Noto Sans", sans-serif;
+}
+#home-page{
+    height: 88vh;
+    background-color: #ecf0f5;
+    overflow-y: scroll;
+}
+.home{
+    /* display: flex; */
+    /* row-gap: 10px; */
+    /* flex-wrap: wrap; */
+    background-color: white;
+    margin-top: 20px;
+    padding : 20px 10px;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    row-gap: 10px;
+    column-gap: 10px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .home{
+        grid-template-columns: auto auto auto;
+    }
+  }
+  @media only screen and (max-width: 992px) {
+    .home{
+        grid-template-columns: auto auto;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .home{
+        grid-template-columns: auto;
+    }
+  }
+
+.box{
+    border: 1px solid black;
+    padding : 6px;
+    border-radius: 2px;
+    color: white;
+}
+.box-name{
+    font-size: 18px;
+    font-weight: 700;
+}
+.box-value{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.box-1{
+    background-image: linear-gradient(to right top, #053737, #004462, #004da0, #004dd8, #1222eb);
+}
+.box-2{
+    background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);    
+}
+.box-3{
+    background-image: linear-gradient(to right top, #230537, #36055e, #460589, #5308b8, #5a12eb);
+}
+.box-4{
+    background-image: linear-gradient(to left top, #370505, #6e2818, #a3541b, #ce8916, #ebc512);
+}
