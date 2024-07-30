@@ -1,0 +1,8 @@
+Reports filter option : Client ID, Account ID, Complaint Number, Phone Number.
+Primary key : Account ID, Complaint Number, Phone Number.
+
+Complaint Status flow;
+IN PROCESS -> RESOLUTION PENDING -> RESOLVED/REPLACEMENT RAISED.
+Replacement Status flow : DC Uploaded-OFD(warehouse details in field), Replaced!
+
+Update Status : add issue, current Status, remove MFI.
