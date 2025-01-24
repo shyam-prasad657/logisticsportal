@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { branch, mfi, state, status, vendorName } from '../mockData/mockData';
 import './addComplaint.css';
 
@@ -17,30 +18,46 @@ export default function Complaint(){
     const [vendorData, setVendordata] = useState([]);
     const [stateData, setStatedata] = useState([]);
 
-    useEffect(()=> {
+    useEffect(()=> {//mfi
                 fetch('http://localhost:8081/mfi')
                 .then(res => res.json())
                 .then(data => setMfidata(data))
                 .catch(err => console.log(err))
         },[]);
-        useEffect(()=> {
+        useEffect(()=> {//branch
                 fetch('http://localhost:8081/branch')
                 .then(res => res.json())
                 .then(data => setBranchdata(data))
                 .catch(err => console.log(err))
         },[]);
-        useEffect(()=> {
+        useEffect(()=> {//vendor
                 fetch('http://localhost:8081/vendor')
                 .then(res => res.json())
                 .then(data => setVendordata(data))
                 .catch(err => console.log(err))
         },[]);
-        useEffect(()=> {
+        useEffect(()=> {//states
                 fetch('http://localhost:8081/states')
                 .then(res => res.json())
                 .then(data => setStatedata(data))
                 .catch(err => console.log(err))
         },[]);
+
+        //post data
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [id, setId] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8081/submit', { name, phone,id });
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert('Error submitting data.');
+    }
+  };
 
     return(
         <div className= "container-fluid" id = "add-complaint-page">
@@ -63,13 +80,14 @@ export default function Complaint(){
                     <h4>Create New</h4>
                     </div>
                 <div className = "row">
+                <form onSubmit={handleSubmit}>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Complaint Number</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Number" />
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Customer Name</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" />
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" onChange={(e) => setName(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Complaint Date</label>
@@ -81,11 +99,11 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Account ID</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" />
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" onChange={(e) => setId(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Customer Phone Number</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Customer Phone Number" />
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Customer Phone Number" onChange={(e) => setPhone(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="input4" className="form-label">MFI</label>
@@ -129,6 +147,7 @@ export default function Complaint(){
                 <div className='d-flex justify-content-center mt-4'>
                     <button type="submit" className="btn btn-success px-4">Create</button>
                 </div>
+                </form>
                 </div>
                 </div>
             </div>
