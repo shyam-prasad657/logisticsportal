@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/complaint-portal/static/css/main.67753cf2.css",
+    "main.js": "/complaint-portal/static/js/main.b4b1f2df.js",
+    "index.html": "/complaint-portal/index.html",
+    "main.67753cf2.css.map": "/complaint-portal/static/css/main.67753cf2.css.map",
+    "main.b4b1f2df.js.map": "/complaint-portal/static/js/main.b4b1f2df.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.67753cf2.css",
+    "static/js/main.b4b1f2df.js"
+  ]
+}
