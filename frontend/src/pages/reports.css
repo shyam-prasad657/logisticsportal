@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
+* {
+    box-sizing: border-box !important;
+    font-family: "Noto Sans", sans-serif;
+}
+
+#reports-page{
+    height: 88vh;
+    background-color: #ecf0f5;
+    overflow-y: scroll;
+}
+.reports {
+    background-color: white;
+    margin-top: 20px;
+    padding : 20px 10px;
+    overflow-y: scroll;
+}
+
+.reports-header{
+    display: flex;
+    justify-content: space-between;
+}
+.form-control, .form-select, .input-group-text{
+    border: 1px solid black;
+}
+.form-control:focus, .form-select:focus{
+    border: 1px solid black;
+    box-shadow: none;
+}
+.status-label{
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color : white;
+    padding : 2px 5px;
+    border-radius: 3px;
+    min-width: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.status-resolved{
+    background-color: #14A44D;
+}
+.status-replacement-raised{
+    background-color: #54B4D3;
+}
+.status-resolution-pending{
+    background-color: #E4A11B;
+}
+.status-in-process{
+    background-color: #3B71CA;
+}
+.status-replacement-done{
+    background-color: #7B68EE;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+.dt-search{
+    display: none;
+}
