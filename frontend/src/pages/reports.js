@@ -224,7 +224,7 @@
                         <thead>
                             <tr>
                             <th scope="col">Complaint Date</th>
-                            <th scope="col">Complaint Number</th>
+                            {/* <th scope="col">Complaint Number</th> */}
                             <th scope="col">Client ID</th>
                             <th scope="col">Account ID</th>
                             <th scope="col">Customer Name</th>
@@ -242,7 +242,7 @@
                             {data.map((item, index) => (
                             <tr key = {index}>
                             <td>{item.complaintDate}</td>
-                            <td scope="row">{item.complaintNumber}</td>
+                            {/* <td scope="row">{item.complaintNumber}</td> */}
                             <td>{item.clientid}</td>
                             <td>{item.accountid}</td>
                             <td>{item.customerName}</td>
