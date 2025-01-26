@@ -46,12 +46,21 @@ export default function Complaint(){
         //post data
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [id, setId] = useState('');
+    const [accountid, setAccountid] = useState('');
+    const [date, setDate] = useState('');
+    const [clientid, setClientid] = useState('');
+    const [mfi, setMfi] = useState('');
+    const [branch, setBranch] = useState('');
+    const [state, setState] = useState('');
+    const [vendor, setVendor] = useState('');
+    const [issue, setIssue] = useState('');
+    const initialStatus = 1;
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8081/submit', { name, phone,id });
+      const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue, initialStatus });
       alert(response.data.message);
     } catch (error) {
       console.error(error);
@@ -60,7 +69,7 @@ export default function Complaint(){
   };
 
     return(
-        <div className= "container-fluid" id = "add-complaint-page">
+        <div className= "container-fluid" accountid = "add-complaint-page">
             <div className='container add-complaint'>
                 <h3>New Complaint</h3>
                 <div className='px-4'>
@@ -79,27 +88,23 @@ export default function Complaint(){
                 <div className='add-header'>
                     <h4>Create New</h4>
                     </div>
-                <div className = "row">
                 <form onSubmit={handleSubmit}>
-                <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Complaint Number</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Number" />
-                </div>
+                <div className = "row">
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Customer Name</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" onChange={(e) => setName(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Complaint Date</label>
-                <input type="date" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Number" />
+                <input type="date" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Date" onChange={(e) => setDate(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Client ID</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Client ID" />
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Client ID" onChange={(e) => setClientid(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Account ID</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" onChange={(e) => setId(e.target.value)} required/>
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" onChange={(e) => setAccountid(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Customer Phone Number</label>
@@ -107,48 +112,49 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="input4" className="form-label">MFI</label>
-                <select className="form-select" id = "input4" aria-label="Default select example">
+                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setMfi(e.target.value)} required>
+                <option defaultValue>--Select MFI--</option>
                     {mfiData.map((item, index) => 
-                            <option key = {index.id} value = {item.mfi_name}>{item.mfi_name}</option>
+                            <option key = {index} value = {item.id}>{item.mfi_name}</option>
                     )}
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="input4" className="form-label">Branch</label>
-                <select className="form-select" id = "input4" aria-label="Default select example">
+                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setBranch(e.target.value)} required>
                 <option defaultValue>--Select Branch--</option>
                     {branchData.map((item, index) => 
-                            <option key = {index.id} value = {item.branch_name}>{item.branch_name}</option>
+                        <option key = {index} value = {item.id}>{item.branch_name}</option>
                     )}
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="input4" className="form-label">State</label>
-                <select className="form-select" id = "input4" aria-label="Default select example">
+                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setState(e.target.value)} required>
                 <option defaultValue>--Select State--</option>
                     {stateData.map((item, index) => 
-                            <option key = {index.id} value = {item.state_name}>{item.state_name}</option>
+                            <option key = {index} value = {item.id}>{item.state_name}</option>
                     )}
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="input4" className="form-label">Vendor Name</label>
-                <select className="form-select" id = "input4" aria-label="Default select example">
+                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setVendor(e.target.value)} required>
                 <option defaultValue>--Select Vendor Name--</option>
                     {vendorData.map((item, index) =>
-                            <option key = {index.id} value = {item.vendor_name}>{item.vendor_name}</option>
+                            <option key = {index} value = {item.id}>{item.vendor_name}</option>
                     )}
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label for="exampleFormControlInput1" className="form-label">Issue</label>
-                <textarea type="text" className="form-control" id="exampleFormControlInput1" placeholder="Explain the Issue" />
+                <textarea type="text" className="form-control" id="exampleFormControlInput1" placeholder="Explain the Issue" onChange={(e) => setIssue(e.target.value)}/>
                 </div>
                 <div className='d-flex justify-content-center mt-4'>
                     <button type="submit" className="btn btn-success px-4">Create</button>
                 </div>
-                </form>
                 </div>
+                </form>
                 </div>
             </div>
         </div>

@@ -5,7 +5,8 @@ import axios from 'axios';
 
 function Update() {
     const [accountId, setAccountiD] = useState('');
-    const [updatedStatus, setUpdatedstatus] = useState()
+    const [updatedStatus, setUpdatedstatus] = useState();
+    const [remarks, setRemarks] = useState();
     const invalidComplaint = false;
 
     //put()
@@ -14,14 +15,12 @@ function Update() {
     const [stateData, setStatedata] = useState([]);
     const [branchData, setBranchdata] = useState([]);
 
-    const [message, setMessage] = useState('');
-
         useEffect(()=> {//userdb
                     fetch('http://localhost:8081/userdb')
                     .then(res => res.json())
                     .then(data => setData(data))
                     .catch(err => console.log(err))
-                },[]);
+                },[data]);
         useEffect(()=> {//states
             fetch('http://localhost:8081/states')
             .then(res => res.json())
@@ -64,17 +63,17 @@ function Update() {
     };
     const handleSubmit = async (e) => {
         console.log(accountId, updatedStatus)
-        e.preventDefault();
+        // e.preventDefault();
         try {
-            console.log('Payload:', { accountId, updatedStatus });
-            const response = await axios.put('http://localhost:8081/update-status', { accountId, updatedStatus });
-            setMessage(response.data.message);
+            console.log('Payload:', { accountId, updatedStatus, remarks });
+            const response = await axios.put('http://localhost:8081/update-status', { accountId, updatedStatus, remarks });
+            alert(response.data.message);
         } catch (error) {
             console.error('Error updating status:', error);
             if (!error.response) {
-                setMessage('Network error: Unable to connect to the server.');
+                alert('Network error: Unable to connect to the server.');
             } else {
-                setMessage(error.response.data?.message || 'An unexpected error occurred.');
+                alert(error.response.data?.message || 'An unexpected error occurred.');
             }
         }
 
@@ -104,8 +103,8 @@ function Update() {
                 </div>
             <form onSubmit={handleSubmit}>
                 <div className='container update'>
-                    <div className='d-flex justify-content-between'>
-                        <div className="col-md-4">
+                    <div className='d-flex justify-content-around'>
+                        <div className="col-md-3">
                             <label htmlFor="exampleFormControlInput1" className="form-label">Account ID</label>
                             <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Account ID" onChange={(e) => setAccountiD(e.target.value)} required />
                             {filteredData.length === 0 && accountId !== '' && !invalidComplaint && (
@@ -124,7 +123,11 @@ function Update() {
                                 </div>
                             ))}
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Remarks</label>
+                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Remarks" onChange={(e) => setRemarks(e.target.value)} required />
+                        </div>
+                        <div className="col-md-3">
                             <label htmlFor="input4" className="form-label">Status</label>
                             <select className="form-select" id="input4" aria-label="Default select example" onChange={(e) => setUpdatedstatus(e.target.value)}>
                                 <option defaultValue>--Select Status--</option>
