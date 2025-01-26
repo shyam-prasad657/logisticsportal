@@ -62,14 +62,14 @@ app.get('/vendor', (req, res)=> {
 
 // API Route to Handle Data Submission
 app.post('/submit', (req, res) => {
-    const { name, phone ,id } = req.body;
+    const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue, initialStatus} = req.body;
   
-    if (!name || !phone || !id) {
+    if (!name || !phone || !accountid || !name || !phone || !accountid || !date || !clientid || !mfi || !branch || !state || !vendor || !initialStatus) {
       return res.status(400).json({ error: 'Name and phone number are required.' });
     }
   
-    const query = 'INSERT INTO userdb (customerName, customerPhone, accountid) VALUES (?, ?, ?)';
-    db.query(query, [name, phone, id], (err, result) => {
+    const query = 'INSERT INTO userdb (customerName, customerPhone, accountid, complaintDate, clientid, mfi, branch, state, vendorName, issue, status) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(query, [name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue, initialStatus], (err, result) => {
       if (err) {
         console.error('Error inserting data:', err);
         return res.status(500).json({ error: 'Database error.' });
@@ -81,13 +81,13 @@ app.post('/submit', (req, res) => {
 
   // API to update status
 app.put('/update-status', (req, res) => {
-    const  { accountId, updatedStatus } = req.body;
+    const  { accountId, remarks, updatedStatus} = req.body;
     console.log('Request Body:', req.body);
     if(!accountId, !updatedStatus) {
         return res.status(400).json({ message: 'Account ID and Status are required'});
     }
-    const query = `UPDATE userdb SET status = ? WHERE accountid = ?`;
-    db.query(query, [updatedStatus, accountId], (err,result) => {
+    const query = `UPDATE userdb SET status = ? , remarks = ? WHERE accountid = ?`;
+    db.query(query, [updatedStatus,  remarks, accountId,], (err,result) => {
         if(err) {
             console.log(err);
             return res.status(500).json({ message : 'Database error.'});
