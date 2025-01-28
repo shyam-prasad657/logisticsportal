@@ -107,7 +107,7 @@ app.delete('/api/delete/:id', (req, res) => {
     if (!id || isNaN(id)) {
         return res.status(400).json({ message: 'Invalid ID provided' }); // 400 - Bad Request
     }   
-    const sql = 'DELETE FROM userdb WHERE complaintNumber = ?';
+    const sql = 'DELETE FROM userdb WHERE id = ?';
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error(err);

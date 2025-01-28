@@ -173,9 +173,10 @@ import axios from 'axios';
 
         const confirmDelete = async () => {
             try {
-                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.complaintNumber}`)
+                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.id}`)
                 alert(response.data.message)
-                console.log(selectedItem.complaintNumber)
+                console.log(selectedItem.id)
+                window.location.reload();
             }
             catch(error) {
                 console.error('An unexpected error occured.', error);
@@ -261,7 +262,7 @@ import axios from 'axios';
                             <tr key = {index}>
                             <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDeleteClick(item)}/></td>
                             <td>{item.complaintDate}</td>
-                            {/* <td scope="row">{item.complaintNumber}</td> */}
+                            {/* <td scope="row">{item.id}</td> */}
                             <td>{item.clientid}</td>
                             <td>{item.accountid}</td>
                             <td>{item.customerName}</td>
