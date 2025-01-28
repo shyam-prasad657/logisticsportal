@@ -4,6 +4,7 @@
     import './reports.css';
     import 'datatables.net-buttons/js/buttons.html5';
     import 'datatables.net-buttons/js/dataTables.buttons';
+    import { MdDelete } from "react-icons/md";
     // import 'datatables.net-buttons/js/buttons.colVis'; 
     import { useEffect, useState } from 'react';
     export default function Reports(){
@@ -223,6 +224,7 @@
                             {/* <caption>Total 12 out of 12</caption> */}
                         <thead>
                             <tr>
+                            <th scope="col">Action</th>
                             <th scope="col">Complaint Date</th>
                             {/* <th scope="col">Complaint Number</th> */}
                             <th scope="col">Client ID</th>
@@ -239,8 +241,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item, index) => (
+                            {complaints.map((item, index) => (
                             <tr key = {index}>
+                            <td><MdDelete className='delete-icon'/></td>
                             <td>{item.complaintDate}</td>
                             {/* <td scope="row">{item.complaintNumber}</td> */}
                             <td>{item.clientid}</td>
