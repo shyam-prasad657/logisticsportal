@@ -7,6 +7,7 @@
     import { MdDelete } from "react-icons/md";
     // import 'datatables.net-buttons/js/buttons.colVis'; 
     import { useEffect, useState } from 'react';
+import axios from 'axios';
     export default function Reports(){
         const [data, setData] = useState([]);
         const [statusData, setStatusdata] = useState([]);
@@ -41,7 +42,7 @@
             .then(res => res.json())
             .then(data => setData(data))
             .catch(err => console.log(err))
-        },[]);
+        },[data]);
         useEffect(()=> {//states
             fetch('http://localhost:8081/states')
             .then(res => res.json())
@@ -74,27 +75,27 @@
         },[]);
         useEffect(() => {
             if(data.length > 0) {
-            const table = $('#myTable').DataTable();
-            function filterColumn(i) {
-                table
-                .column(i)
-                .search(
-                    $(`#col${i}_filter`).val()
-                )
-                .draw();
-            }
-            $('input.column_filter').on('keyup click', function () {
-                const columnIndex = $(this).data('column');
-                filterColumn(columnIndex);
-            });
-            $('select.column_filter').on('change', function () {
+                const table = $('#myTable').DataTable();
+                function filterColumn(i) {
+                    table
+                    .column(i)
+                    .search(
+                        $(`#col${i}_filter`).val()
+                    )
+                    .draw();
+                }
+                $('input.column_filter').on('keyup click', function () {
+                    const columnIndex = $(this).data('column');
+                    filterColumn(columnIndex);
+                });
+                $('select.column_filter').on('change', function () {
                 const columnIndex = $(this).data('column');
                 filterColumn(columnIndex);
             });
             $('#col8_filter').on('change', function () {
                 const selectedValue = this.value;
                 if (selectedValue === 'Select Complaint Status') {
-                table
+                    table
                     .column(8)
                     .search('')
                     .draw();
@@ -113,11 +114,11 @@
                         .column(6)
                         .search('')
                         .draw();
-                } else {
+                    } else {
                     table
-                        .column(6)
-                        .search(selectedValue)
-                        .draw();
+                    .column(6)
+                    .search(selectedValue)
+                    .draw();
                 }
             });
             // Export to Excel button setup
@@ -157,14 +158,29 @@
                     return 'status-resolution-pending';
                 case 'Resolved':
                     return 'status-resolved';
-                case 'Replacement Raised':
-                    return 'status-replacement-raised';
-                case 'Replacement Done':
-                    return 'status-replacement-done';
+                    case 'Replacement Raised':
+                        return 'status-replacement-raised';
+                        case 'Replacement Done':
+                            return 'status-replacement-done';
                 return '';
             };
         }
-            
+        const [selectedItem, setSelectedItem] = useState(null);
+        const handleDeleteClick = (e) => {
+            setSelectedItem(e);
+            console.log(selectedItem)
+        }
+
+        const confirmDelete = async () => {
+            try {
+                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.complaintNumber}`)
+                alert(response.data.message)
+                console.log(selectedItem.complaintNumber)
+            }
+            catch(error) {
+                console.error('An unexpected error occured.', error);
+            }
+        }
         return(
             <div className= "container-fluid" id = "reports-page">
                 <div className='container reports px-3'>
@@ -241,9 +257,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {complaints.map((item, index) => (
+                            {data.map((item, index) => (
                             <tr key = {index}>
-                            <td><MdDelete className='delete-icon'/></td>
+                            <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDeleteClick(item)}/></td>
                             <td>{item.complaintDate}</td>
                             {/* <td scope="row">{item.complaintNumber}</td> */}
                             <td>{item.clientid}</td>
@@ -261,6 +277,29 @@
                             ))}
                         </tbody>
                         </table>
+
+                        {/* Modal */}
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete it ?</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <b>Customer Name : </b>{selectedItem?.customerName} <br />
+                                <b>Mfi Name : </b>{findMfi(selectedItem?.mfi)} <br />
+                                <b>Current Status: </b>{findStatus(selectedItem?.status)} <br />
+                                <b>Client ID : </b>{selectedItem?.clientid} <br />
+                                <b>Account ID : </b>{selectedItem?.accountid} <br />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger" onClick={confirmDelete}>Delete</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
                         </div>
                     </div>
                 </div>
