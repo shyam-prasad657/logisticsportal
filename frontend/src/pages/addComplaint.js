@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { branch, mfi, state, status, vendorName } from '../mockData/mockData';
 import './addComplaint.css';
+import * as XLSX from "xlsx";
 
 export default function Complaint(){
     const handleDownloadTemplate = () => {
@@ -54,19 +55,64 @@ export default function Complaint(){
     const [state, setState] = useState('');
     const [vendor, setVendor] = useState('');
     const [issue, setIssue] = useState('');
-    const initialStatus = 1;
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue, initialStatus });
+      const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue});
       alert(response.data.message);
     } catch (error) {
       console.error(error);
       alert('Error submitting data.');
     }
   };
+   //Excel Import
+   const [excelData, setExcelData] = useState([]);
+
+   const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    // console.log(file)
+
+    if(!file) return;
+    const reader = new FileReader();
+    // console.log(reader);
+    reader.onload = (event) => {
+        const data = event.target.result;
+        let workbook;
+
+        if(file.name.endsWith(".csv")) {
+            //Parse CSV file
+            const csvData = XLSX.read(data, {type : "string"});
+            const sheet = csvData.Sheets[csvData.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
+            setExcelData(jsonData);
+        } else {
+            // Parse Excel file (.xlsx, .xls)
+            const binaryData = new Uint8Array(event.target.result);
+            workbook = XLSX.read(binaryData, {type : "array"});
+            const SheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[SheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            setExcelData(jsonData);
+        }
+    }
+    if (file.name.endsWith(".csv")) {
+        reader.readAsText(file);
+    } else {
+        reader.readAsArrayBuffer(file);
+    }
+    console.log(excelData)
+   }
+   const handleUpload = async () => {
+    console.log("Uploading Data: ",excelData); //log data in console
+    try {
+        const response = await axios.post("http://localhost:8081/import-excel", { users : excelData });
+        alert(response.data.message);
+    } catch(error) {
+        alert(`Upload failed:  ${error.message}`)
+    }
+   }
+
 
     return(
         <div className= "container-fluid" accountid = "add-complaint-page">
@@ -79,9 +125,9 @@ export default function Complaint(){
                 </div>
                 <div className='d-flex justify-content-between'>
                 <div className='col-8'>
-                <input type="file" className="form-control" id="bulkimport"/>
+                <input type="file" accept = ".xlsx, .xls, .csv" onChange={handleFileUpload} className="form-control" id="bulkimport"/>
                 </div><div>
-                <button type="button" className="btn btn-success">Import</button>
+                <button type="button" className="btn btn-success" onClick={handleUpload}>Import</button>
                 </div></div></div></div>
             <div className='container add-complaint'>
                 <div className='px-4'>
@@ -91,27 +137,27 @@ export default function Complaint(){
                 <form onSubmit={handleSubmit}>
                 <div className = "row">
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Customer Name</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Customer Name</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" onChange={(e) => setName(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Complaint Date</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Complaint Date</label>
                 <input type="date" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Date" onChange={(e) => setDate(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Client ID</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Client ID</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Client ID" onChange={(e) => setClientid(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Account ID</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Account ID</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" onChange={(e) => setAccountid(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Customer Phone Number</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Customer Phone Number</label>
                 <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Customer Phone Number" onChange={(e) => setPhone(e.target.value)} required/>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="input4" className="form-label">MFI</label>
+                <label htmlFor="input4" className="form-label">MFI</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setMfi(e.target.value)} required>
                 <option defaultValue>--Select MFI--</option>
                     {mfiData.map((item, index) => 
@@ -120,7 +166,7 @@ export default function Complaint(){
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="input4" className="form-label">Branch</label>
+                <label htmlFor="input4" className="form-label">Branch</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setBranch(e.target.value)} required>
                 <option defaultValue>--Select Branch--</option>
                     {branchData.map((item, index) => 
@@ -129,7 +175,7 @@ export default function Complaint(){
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="input4" className="form-label">State</label>
+                <label htmlFor="input4" className="form-label">State</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setState(e.target.value)} required>
                 <option defaultValue>--Select State--</option>
                     {stateData.map((item, index) => 
@@ -138,7 +184,7 @@ export default function Complaint(){
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="input4" className="form-label">Vendor Name</label>
+                <label htmlFor="input4" className="form-label">Vendor Name</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setVendor(e.target.value)} required>
                 <option defaultValue>--Select Vendor Name--</option>
                     {vendorData.map((item, index) =>
@@ -147,7 +193,7 @@ export default function Complaint(){
                 </select>
                 </div>
                 <div className="col-md-6 mt-4">
-                <label for="exampleFormControlInput1" className="form-label">Issue</label>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Issue</label>
                 <textarea type="text" className="form-control" id="exampleFormControlInput1" placeholder="Explain the Issue" onChange={(e) => setIssue(e.target.value)}/>
                 </div>
                 <div className='d-flex justify-content-center mt-4'>
