@@ -124,11 +124,14 @@ app.delete('/api/delete/:id', (req, res) => {
 app.post('/import-excel', (req, res) => {
     const users = req.body.users;
     if(!users || users.length === 0){
-        return res.status(400).json({message : "No Data Received" });
+        return res.json({message : "No Data Received" });
     }
-    // if(!users["Complaint Date*"] || !users["Customer Name*"] || !users["Client ID*"] || !users["Account ID*"] || !users["Customer Phone Number*"] || !users["MFI*"] || !users["Branch*"] || !users["State"] || !users["Vendor Name*"]) {
-    //     return res.status(400).json({ message: 'Enter the mandatory fields*' });
-    // }
+    // Check for missing mandatory fields in each user entry
+    for (let user of users) {
+        if (!user["Complaint Date*"] || !user["Customer Name*"] || !user["Client ID*"] || !user["Account ID*"] || !user["Customer Phone Number*"] || !user["MFI*"] || !user["Branch*"] || !user["State*"] || !user["Vendor Name*"]) {
+            return res.json({ message: 'Please fill in all mandatory fields (marked with *)' });
+        }
+    }
     
     //Column Mapping: Excel -> SQL Fields
     const columnMapping = {

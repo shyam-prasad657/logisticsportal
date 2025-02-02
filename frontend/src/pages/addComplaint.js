@@ -62,8 +62,8 @@ export default function Complaint(){
       const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue});
       alert(response.data.message);
     } catch (error) {
-      console.error(error);
-      alert('Error submitting data.');
+        console.error(error?.response?.data?.message)
+        alert(error?.response?.data?.message || "Unknown Error");
     }
   };
    //Excel Import
