@@ -109,7 +109,17 @@ export default function Complaint(){
         const response = await axios.post("http://localhost:8081/import-excel", { users : excelData });
         alert(response.data.message);
     } catch(error) {
-        alert(`Upload failed:  ${error.message}`)
+        console.error("Error Details:", error);
+        const errorMessage = error.response?.data?.message || error?.message || "Unknown error occurred";
+        if (error.response.data.message === "Validation errors found") {
+            let errorMessage = "Validation Errors:\n";
+            error.response.data.errors.forEach(err => {
+                errorMessage += `Row ${err.row}: ${err.field} - ${err.message}\n`;
+            });
+            alert(errorMessage);
+            return false;
+        }
+        alert(errorMessage);
     }
    }
 
