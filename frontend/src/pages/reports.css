@@ -67,3 +67,7 @@
     font-size:x-large;
     margin : 0;
 }
+
+.pagination {
+    margin : 15px 5px;
+}

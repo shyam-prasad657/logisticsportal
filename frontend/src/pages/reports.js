@@ -1,12 +1,9 @@
     import { complaints, status, state } from '../mockData/mockData';
-    import 'datatables.net-responsive-dt';
-    import $ from 'jquery';
     import './reports.css';
-    import 'datatables.net-buttons/js/buttons.html5';
-    import 'datatables.net-buttons/js/dataTables.buttons';
     import { MdDelete } from "react-icons/md";
     // import 'datatables.net-buttons/js/buttons.colVis'; 
-    import { useEffect, useState } from 'react';
+    import React, { useEffect, useState } from 'react';
+    import ReactPaginate from 'react-paginate';
 import axios from 'axios';
     export default function Reports(){
         const [data, setData] = useState([]);
@@ -15,6 +12,19 @@ import axios from 'axios';
         const [branchData, setBranchdata] = useState([]);
         const [mfiData, setMfidata] = useState([]);
         const [vendorData, setVendordata] = useState([]);
+
+        const [pageCount, setPageCount] = useState(0);
+        const [currentPage, setCurrentPage] = useState(0); // zero-indexed
+
+        const [filters, setFilters] = useState(
+            {
+                status : 0,
+                state : 0,
+                clientId : '',
+                accountId : '',
+                phoneNumber : 0
+            }
+        )
 
         const findBranch = (name) => {
             const x = branchData.find((r) => r.id === name)
@@ -36,13 +46,54 @@ import axios from 'axios';
             const x = vendorData.find((r) => r.id === name)
             return x ? x.vendor_name : "Vendor Not found";
         }
-        console.log(statusData);
-        useEffect(()=> {//userdb
-            fetch('http://localhost:8081/userdb')
-            .then(res => res.json())
-            .then(data => setData(data))
-            .catch(err => console.log(err))
-        },[data]);
+        const fetchData = async (page = 1) => {
+            try {
+                const response = await axios.get('http://localhost:8081/users', {
+                    params : {
+                        page,
+                        status : filters.status || undefined,
+                        state : filters.state || undefined,
+                        clientId : filters.clientId || undefined,
+                        accountId : filters.accountId || undefined,
+                        phoneNumber : filters.phoneNumber || undefined
+                    }
+                });
+                setData(response.data.data);
+                setPageCount(response.data.totalPages)
+            }
+            catch(error) {
+                console.error('Error fetching data', error);
+            }
+        }
+        // Initial data load.
+        useEffect(() => {
+            fetchData();
+        }, []);
+
+        // Handle page click event from ReactPaginate.
+        const handlePageClick = (event) => {
+            setCurrentPage(event.selected)
+            fetchData(event.selected + 1)
+        }
+        const handlefilter = (e) => {
+            setFilters({...filters, [e.target.name] : e.target.value})
+        }
+        console.log('hi',filters)
+          // Fetch data with current filters from first page.
+          const handleFetch = () => {
+            fetchData(1);
+        };
+        const handleReset = () => {
+            setFilters({
+                status : 0,
+                state : 0,
+                clientId : '',
+                accountId : '',
+                phoneNumber : 0
+            })
+            fetchData(1);
+            setCurrentPage(0);
+        }
         useEffect(()=> {//states
             fetch('http://localhost:8081/states')
             .then(res => res.json())
@@ -73,82 +124,6 @@ import axios from 'axios';
             .then(data => setMfidata(data))
             .catch(err => console.log(err))
         },[]);
-        useEffect(() => {
-            if(data.length > 0) {
-                const table = $('#myTable').DataTable();
-                function filterColumn(i) {
-                    table
-                    .column(i)
-                    .search(
-                        $(`#col${i}_filter`).val()
-                    )
-                    .draw();
-                }
-                $('input.column_filter').on('keyup click', function () {
-                    const columnIndex = $(this).data('column');
-                    filterColumn(columnIndex);
-                });
-                $('select.column_filter').on('change', function () {
-                const columnIndex = $(this).data('column');
-                filterColumn(columnIndex);
-            });
-            $('#col8_filter').on('change', function () {
-                const selectedValue = this.value;
-                if (selectedValue === 'Select Complaint Status') {
-                    table
-                    .column(8)
-                    .search('')
-                    .draw();
-                } else {
-                table
-                    .column(8)
-                    .search(selectedValue)
-                    .draw();
-                }
-                console.log(selectedValue);
-            });
-            $('#col6_filter').on('change', function () {
-                const selectedValue = this.value;
-                if (selectedValue === 'Select State') {
-                    table
-                        .column(6)
-                        .search('')
-                        .draw();
-                    } else {
-                    table
-                    .column(6)
-                    .search(selectedValue)
-                    .draw();
-                }
-            });
-            // Export to Excel button setup
-            $('#exportBtn').on('click', function () {
-                table.button('.buttons-excel').trigger();
-            });
-
-            // Initialize buttons after DataTable has been initialized
-            new $.fn.dataTable.Buttons(table, {
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Export',
-                        className: 'btn btn-success',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    }
-                    // ,{
-                    //     extend: 'colvis',
-                    //     text: 'Toggle Columns',
-                    //     className: 'btn btn-info'
-                    // }
-                ]
-            });
-            table.buttons(0, null).container().appendTo($('#export-container'));
-        }
-        },[data,statusData,stateData]);
-        
-        // new DataTable('#myTable');
 
         const getStatusClass = (status) => {
             switch (status) {
@@ -165,6 +140,7 @@ import axios from 'axios';
                 return '';
             };
         }
+        //Delete
         const [selectedItem, setSelectedItem] = useState(null);
         const handleDeleteClick = (e) => {
             setSelectedItem(e);
@@ -199,51 +175,47 @@ import axios from 'axios';
                         </div>
                         </div>
                         <div className="filter-group col-md-4 mb-4">
-                        <label htmlFor="col1_filter" className="form-label">Complaint No.</label>
-                        <input type="text" className="form-control column_filter" id="col1_filter" data-column="1" placeholder="Enter Complaint Number"/>
-                        </div>
-                        <div className="filter-group col-md-4 mb-4">
-                        <label htmlFor="col8_filter" className="form-label">Complaint Status</label>
-                        <select className="form-select column_filter" aria-label="Default select example" data-column="8" id="col8_filter">
-                            <option defaultValue>Select Complaint Status</option>
+                        <label htmlFor="col2_filter" className="form-label">Complaint Status</label>
+                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} value = {filters.status} name = "status" id="col2_filter">
+                            <option defaultValue value = {0}>Select Complaint Status</option>
                             {statusData.map((item, index) => 
-                                <option key = {item.id} value = {item.status_name}>{item.status_name}</option>
+                                <option key = {item.id} value = {item.id}>{item.status_name}</option>
                             )}
                             </select>
                         </div>
                         <div className="filter-group col-md-3 mb-4">
-                        <label htmlFor="col6_filter" className="form-label">State</label>
-                        <select className="form-select column_filter" aria-label="Default select example" data-column = "6" id = "col6_filter">
-                            <option defaultValue>Select State</option>
+                        <label htmlFor="col3_filter" className="form-label">State</label>
+                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} value = {filters.state} name  = "state" id = "col3_filter">
+                            <option defaultValue value = {0}>Select State</option>
                             {stateData.map((item, index) =>
-                            <option key = {item.id} value={item.state_name}>{item.state_name}</option>
+                            <option key = {item.id} value={item.id}>{item.state_name}</option>
                             )}
-                            </select>
+                        </select>
                         </div>
                         <div className="filter-group col-md-3 mb-4">
-                        <label htmlFor="col2_filter" className="form-label">Client ID</label>
-                        <input type="text" className="form-control column_filter" id="col2_filter" data-column = "2" placeholder="Enter Cient ID" />
+                        <label htmlFor="col4_filter" className="form-label">Client ID</label>
+                        <input type="text" className="form-control column_filter" id="col4_filter" onChange={handlefilter} name = "clientId" placeholder="Enter Client ID" />
                         </div>
                         <div className="filter-group col-md-3 mb-4">
-                        <label htmlFor="col3_filter" className="form-label">Account ID</label>
-                        <input type="text" className="form-control column_filter" id="col3_filter" data-column = "3" placeholder="Enter Account ID" />
+                        <label htmlFor="col5_filter" className="form-label">Account ID</label>
+                        <input type="text" className="form-control column_filter" id="col5_filter" onChange={handlefilter} name = "accountId" placeholder="Enter Account ID" />
                         </div>
                         <div className="filter-group col-md-3 mb-4">
-                        <label htmlFor="col11_filter" className="form-label">Customer Phone Number</label>
-                        <input type="text" className="form-control column_filter" data-column = "11" id="col11_filter" placeholder="Enter Customer Ph No" />
+                        <label htmlFor="col6_filter" className="form-label">Customer Phone Number</label>
+                        <input type="text" className="form-control column_filter" id="col6_filter" onChange={handlefilter} name = "phoneNumber" placeholder="Enter Customer Ph No" />
                         </div>
-                        <div className="d-flex justify-content-end">
-                            <button type="submit" className="btn btn-primary px-3">Filter</button>
+                        <div className="d-flex justify-content-around">
+                            <button onClick = {handleFetch} className="btn btn-primary px-3">Filter</button>
+                            <button onClick = {handleReset} className="btn btn-primary px-3">Reset</button>
                         </div>
                     </div>
                     <div className='table-container'>
-                        <table className="table table-hover table-bordered" id = "myTable">
+                        <table className="table table-hover table-bordered">
                             {/* <caption>Total 12 out of 12</caption> */}
                         <thead>
                             <tr>
                             <th scope="col">Action</th>
                             <th scope="col">Complaint Date</th>
-                            {/* <th scope="col">Complaint Number</th> */}
                             <th scope="col">Client ID</th>
                             <th scope="col">Account ID</th>
                             <th scope="col">Customer Name</th>
@@ -278,28 +250,45 @@ import axios from 'axios';
                             ))}
                         </tbody>
                         </table>
-
+                        </div>
+                        <ReactPaginate 
+                            previousLabel = {'Previous'}
+                            nextLabel = {'Next'}
+                            breakLabel = {'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            forcePage={currentPage}
+                            onPageChange={handlePageClick}
+                            containerClassName = 'pagination'
+                            activeClassName = 'active'
+                            previousClassName = 'page-item'
+                            previousLinkClassName = 'page-link'
+                            nextClassName = 'page-item'
+                            nextLinkClassName = 'page-link'
+                            pageClassName = 'page-item'
+                            pageLinkClassName = 'page-link'
+                            />
                         {/* Modal */}
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete it ?</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete it ?</h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div className="modal-body">
                                 <b>Customer Name : </b>{selectedItem?.customerName} <br />
                                 <b>Mfi Name : </b>{findMfi(selectedItem?.mfi)} <br />
                                 <b>Current Status: </b>{findStatus(selectedItem?.status)} <br />
                                 <b>Client ID : </b>{selectedItem?.clientid} <br />
                                 <b>Account ID : </b>{selectedItem?.accountid} <br />
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger" onClick={confirmDelete}>Delete</button>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
                             </div>
                             </div>
-                        </div>
                         </div>
                         </div>
                     </div>
