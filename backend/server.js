@@ -2,10 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
+const paginate = require('express-paginate');
 
-const app = express()
+const app = express();
 app.use(cors())
 app.use(bodyParser.json());
+// Set default limit to 10 and max limit to 50
+app.use(paginate.middleware(10));
 
 const db = mysql.createConnection({
     host : "localhost",
@@ -268,6 +271,66 @@ app.post('/import-excel', (req, res) => {
         res.json({ message: "Data imported Succesfully", inserted: result.affectedRows})
     })
 })
+
+
+// Helper function to build filter conditions based on query parameters.
+function buildFilterConditions(query) {
+    let conditions = [];
+    let valueParams = [];
+    if(query.status) {
+        conditions.push(`status = ?`);
+        valueParams.push(query.status);
+    }
+    if(query.state) {
+        conditions.push(`state = ?`);
+        valueParams.push(query.status);
+    }
+    if(query.accountId) {
+        conditions.push(`accountid = ?`);
+        valueParams.push(query.accountId);
+    }
+    if(query.clientid) {
+        conditions.push(`clientid = ?`);
+        valueParams.push(query.clientId);
+    }
+    if(query.phoneNumber) {
+        conditions.push(`customerPhone = ?`);
+        valueParams.push(query.phoneNumber);
+    }
+    return {conditions, valueParams}
+}
+//Dynamically calling method
+//report.js
+app.get('/users', (req, res, next) => {
+    let page = parseInt(req.query.page) || 1;
+    const limit = 10; //express-paginate
+    const offset = (page - 1) * limit; //automatically computed
+    const {conditions, valueParams} = buildFilterConditions(req.query);
+
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const tableName = '`test-userdb`';
+    // First, count the total rows matching the filters for pagination
+    const countQuery = `SELECT COUNT(*) AS count FROM ${tableName} ${whereClause}`;
+    db.query(countQuery,valueParams, (err, countResult) => {
+        if (err) return next(err);
+
+        //Get total record count to compute total pages
+        const dataQuery = `SELECT * from ${tableName} ${whereClause} LIMIT ? OFFSET ?`;
+        db.query(dataQuery,[...valueParams, limit,offset], (err, results) => {
+            if (err) return next(err);
+            console.log(countResult)
+            const itemCount = countResult[0].count;
+            const pageCount = Math.ceil(itemCount / limit);
+
+            res.json({
+                data : results, 
+                itemCount,
+                totalPages : pageCount
+            })
+        })
+    })
+})
+
 app.listen(8081, ()=> {
     console.log("listening...");
 })
