@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
 const paginate = require('express-paginate');
+const ExcelJS = require('exceljs');
+const { Parser } = require('json2csv');
+const PDFDocument = require('pdfkit');
 
 const app = express();
 app.use(cors())
@@ -299,6 +302,7 @@ function buildFilterConditions(query) {
     }
     return {conditions, valueParams}
 }
+const tableName = '`test-userdb`';
 //Dynamically calling method
 //report.js
 app.get('/users', (req, res, next) => {
@@ -308,7 +312,6 @@ app.get('/users', (req, res, next) => {
     const {conditions, valueParams} = buildFilterConditions(req.query);
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-    const tableName = '`test-userdb`';
     // First, count the total rows matching the filters for pagination
     const countQuery = `SELECT COUNT(*) AS count FROM ${tableName} ${whereClause}`;
     db.query(countQuery,valueParams, (err, countResult) => {
@@ -328,6 +331,62 @@ app.get('/users', (req, res, next) => {
                 totalPages : pageCount
             })
         })
+    })
+})
+
+// GET /export endpoint to export data in Excel, CSV, or PDF formats.
+app.get('/export', (req, res) => {
+    const type = req.query.type; // Expected values: 'excel', 'csv', 'pdf'
+    const {conditions, valueParams} = buildFilterConditions(req.query);
+    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : '';
+
+    const exportQuery = `SELECT * FROM ${tableName} ${whereClause}`;
+    db.query(exportQuery, valueParams, async(err, results) => {
+        if(err){
+            console.error(err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (type === 'excel') {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Data');
+            if (results.length > 0) {
+              worksheet.columns = Object.keys(results[0]).map(key => ({ header: key, key }));
+              results.forEach(row => worksheet.addRow(row));
+            }
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.xlsx');
+            await workbook.xlsx.write(res);
+            res.end();
+          } else if (type === 'csv') {
+            const fields = results.length > 0 ? Object.keys(results[0]) : [];
+            const parser = new Parser({ fields });
+            const csv = parser.parse(results);
+            res.header('Content-Type', 'text/csv');
+            res.attachment('data.csv');
+            res.send(csv);
+          } else if (type === 'pdf') {
+            const doc = new PDFDocument();
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.pdf');
+            doc.pipe(res);
+            doc.fontSize(12);
+            if (results.length > 0) {
+              const headers = Object.keys(results[0]);
+              // Draw header row
+              doc.text(headers.join(' | '));
+              doc.moveDown();
+              // Draw each row
+              results.forEach(row => {
+                const rowData = headers.map(key => row[key]);
+                doc.text(rowData.join(' | '));
+              });
+            } else {
+              doc.text('No data found.');
+            }
+            doc.end();
+          } else {
+            res.status(400).json({ error: 'Invalid export type' });
+          }
     })
 })
 

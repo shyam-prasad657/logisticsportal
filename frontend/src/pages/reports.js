@@ -140,6 +140,11 @@ import axios from 'axios';
                 return '';
             };
         }
+        // Open export endpoint in a new window (or tab)
+        const handleExport = (type) => {
+            // You can use window.location or window.open
+            window.open(`http://localhost:8081/export?type=${type}&status=${filters.status || undefined}&state=${filters.state || undefined}&accountId=${filters.accountId || undefined}&clientId=${filters.clientId || undefined}&phoneNumber=${filters.phoneNumber || undefined}`, '_blank', '_blank');
+        }
         //Delete
         const [selectedItem, setSelectedItem] = useState(null);
         const handleDeleteClick = (e) => {
@@ -163,7 +168,9 @@ import axios from 'axios';
                 <div className='container reports px-3'>
                     <div className='reports-header mb-3'>
                     <h3>Reports</h3>
-                    <div id = "export-container"></div>
+                    <button onClick={() => handleExport('excel')} className="btn btn-success">Export to Excel</button>
+                    <button onClick={() => handleExport('csv')} className="btn btn-secondary">Export to CSV</button>
+                    <button onClick={() => handleExport('pdf')} className="btn btn-danger">Export to PDF</button>
                     </div>
                     <div className='row mb-4'>
                         <div className='filter-group col-md-4 mb-4'>
