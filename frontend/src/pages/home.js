@@ -4,7 +4,7 @@ import './home.css';
 export default function Home(){
     const [data, setData] = useState([]);
     useEffect(()=> {//userdb
-                fetch('http://localhost:8081/userdb')
+                fetch('http://localhost:8081/test-userdb')
                 .then(res => res.json())
                 .then(data => setData(data))
                 .catch(err => console.log(err))

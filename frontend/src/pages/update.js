@@ -16,7 +16,7 @@ function Update() {
     const [branchData, setBranchdata] = useState([]);
 
         useEffect(()=> {//userdb
-                    fetch('http://localhost:8081/userdb')
+                    fetch('http://localhost:8081/test-userdb')
                     .then(res => res.json())
                     .then(data => setData(data))
                     .catch(err => console.log(err))
@@ -125,7 +125,7 @@ function Update() {
                         </div>
                         <div className="col-md-3">
                         <label htmlFor="exampleFormControlInput1" className="form-label">Remarks</label>
-                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Remarks" onChange={(e) => setRemarks(e.target.value)} required />
+                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Remarks" onChange={(e) => setRemarks(e.target.value)} />
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="input4" className="form-label">Status</label>

@@ -183,7 +183,7 @@ import axios from 'axios';
                         </div>
                         <div className="filter-group col-md-4 mb-4">
                         <label htmlFor="col2_filter" className="form-label">Complaint Status</label>
-                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} value = {filters.status} name = "status" id="col2_filter">
+                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} name = "status" id="col2_filter">
                             <option defaultValue value = {0}>Select Complaint Status</option>
                             {statusData.map((item, index) => 
                                 <option key = {item.id} value = {item.id}>{item.status_name}</option>
@@ -192,7 +192,7 @@ import axios from 'axios';
                         </div>
                         <div className="filter-group col-md-3 mb-4">
                         <label htmlFor="col3_filter" className="form-label">State</label>
-                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} value = {filters.state} name  = "state" id = "col3_filter">
+                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} name  = "state" id = "col3_filter">
                             <option defaultValue value = {0}>Select State</option>
                             {stateData.map((item, index) =>
                             <option key = {item.id} value={item.id}>{item.state_name}</option>

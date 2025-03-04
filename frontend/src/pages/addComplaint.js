@@ -58,9 +58,11 @@ export default function Complaint(){
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue)
     try {
       const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue});
       alert(response.data.message);
+      window.location.reload();
     } catch (error) {
         console.error(error?.response?.data?.message)
         alert(error?.response?.data?.message || "Unknown Error");
