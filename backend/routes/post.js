@@ -5,13 +5,14 @@ const router = express.Router();
 // API Route to Handle Data Submission
 const tableName = '`test-userdb`';
 router.post('/submit', (req, res) => {
-    const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue} = req.body;
-  
-    if (!name || !phone || !accountid || !name || !phone || !accountid || !date || !clientid || !mfi || !branch || !state || !vendor) {
+    // const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue} = req.body;
+    const {formData} = req.body
+
+    if (!formData.name || !formData.phone || !formData.accountid || !formData.phone || !formData.accountid || !formData.date || !formData.clientid || !formData.mfi || !formData.branch || !formData.state || !formData.vendor) {
       return res.status(400).json({ error: 'Name and phone number are required.' });
     }
     const query = `INSERT INTO ${tableName} (customerName, customerPhone, accountid, complaintDate, clientid, mfi, branch, state, vendorName, issue) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.query(query, [name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue], (err, result) => {
+    db.query(query, [formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue], (err, result) => {
       if (err) {
         console.error('Error inserting data:', err);
         return res.status(500).json({ error: 'Database error.' });

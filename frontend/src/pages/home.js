@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
 import './home.css';
+import { useData } from '../components/fetchdata';
 
 export default function Home(){
-    const [data, setData] = useState([]);
-    useEffect(()=> {//userdb
-                fetch('http://localhost:8081/test-userdb')
-                .then(res => res.json())
-                .then(data => setData(data))
-                .catch(err => console.log(err))
-            },[data]);
+    const { data } = useData();
     const totalCount = data.length;
     const replacementIssuedCount = data.filter(item => item.status === 4).length;
     const replacementDoneCount = data.filter(item => item.status === 5).length;
