@@ -5,14 +5,10 @@
     import React, { useEffect, useState } from 'react';
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
+import { useData } from '../components/fetchdata';
     export default function Reports(){
         const [data, setData] = useState([]);
-        const [statusData, setStatusdata] = useState([]);
-        const [stateData, setStatedata] = useState([]);
-        const [branchData, setBranchdata] = useState([]);
-        const [mfiData, setMfidata] = useState([]);
-        const [vendorData, setVendordata] = useState([]);
-
+        const { statusData, branchData, mfiData, vendorData,stateData } = useData();
         const [pageCount, setPageCount] = useState(0);
         const [currentPage, setCurrentPage] = useState(0); // zero-indexed
 
@@ -94,36 +90,6 @@ import axios from 'axios';
             fetchData(1);
             setCurrentPage(0);
         }
-        useEffect(()=> {//states
-            fetch('http://localhost:8081/states')
-            .then(res => res.json())
-            .then(data => setStatedata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//branch
-            fetch('http://localhost:8081/branch')
-            .then(res => res.json())
-            .then(data => setBranchdata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//status
-            fetch('http://localhost:8081/status')
-            .then(res => res.json())
-            .then(data => setStatusdata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//vendor
-            fetch('http://localhost:8081/vendor')
-            .then(res => res.json())
-            .then(data => setVendordata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//mfi
-            fetch('http://localhost:8081/mfi')
-            .then(res => res.json())
-            .then(data => setMfidata(data))
-            .catch(err => console.log(err))
-        },[]);
 
         const getStatusClass = (status) => {
             switch (status) {

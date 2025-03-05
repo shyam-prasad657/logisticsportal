@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { branch, mfi, state, status, vendorName } from '../mockData/mockData';
 import './addComplaint.css';
 import * as XLSX from "xlsx";
+import { useData } from '../components/fetchdata';
 
 export default function Complaint(){
     const handleDownloadTemplate = () => {
@@ -14,53 +14,28 @@ export default function Complaint(){
         document.body.removeChild(link); // Remove the link from the document
     };
     //fetch sql data
-    const [mfiData, setMfidata] = useState([]);
-    const [branchData, setBranchdata] = useState([]);
-    const [vendorData, setVendordata] = useState([]);
-    const [stateData, setStatedata] = useState([]);
-
-    useEffect(()=> {//mfi
-                fetch('http://localhost:8081/mfi')
-                .then(res => res.json())
-                .then(data => setMfidata(data))
-                .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//branch
-                fetch('http://localhost:8081/branch')
-                .then(res => res.json())
-                .then(data => setBranchdata(data))
-                .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//vendor
-                fetch('http://localhost:8081/vendor')
-                .then(res => res.json())
-                .then(data => setVendordata(data))
-                .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//states
-                fetch('http://localhost:8081/states')
-                .then(res => res.json())
-                .then(data => setStatedata(data))
-                .catch(err => console.log(err))
-        },[]);
-
-        //post data
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [accountid, setAccountid] = useState('');
-    const [date, setDate] = useState('');
-    const [clientid, setClientid] = useState('');
-    const [mfi, setMfi] = useState('');
-    const [branch, setBranch] = useState('');
-    const [state, setState] = useState('');
-    const [vendor, setVendor] = useState('');
-    const [issue, setIssue] = useState('');
-
+    const { mfiData, branchData, vendorData, stateData } = useData();
+    //post data
+    const [formData, setFormData] = useState({
+        name : '',
+        phone : '',
+        accountid : '',
+        date : '',
+        clientid : '',
+        mfi : '',
+        branch : '',
+        state : '',
+        vendor : '',
+        issue : ''
+    })
+    const handleForm = (e) => {
+        setFormData({...formData, [e.target.name] : e.target.value})
+    }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue)
+    console.log(formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue)
     try {
-      const response = await axios.post('http://localhost:8081/submit', { name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue});
+      const response = await axios.post('http://localhost:8081/submit', {formData});
       alert(response.data.message);
       window.location.reload();
     } catch (error) {
@@ -150,27 +125,27 @@ export default function Complaint(){
                 <div className = "row">
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Customer Name</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" onChange={(e) => setName(e.target.value)} required/>
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Customer Name" name = 'name' onChange={handleForm} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Complaint Date</label>
-                <input type="date" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Date" onChange={(e) => setDate(e.target.value)} required/>
+                <input type="date" className="form-control" id="exampleFormControlInput1" placeholder="Complaint Date" name = 'date' onChange={handleForm} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Client ID</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Client ID" onChange={(e) => setClientid(e.target.value)} required/>
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Client ID" name = 'clientid' onChange={handleForm} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Account ID</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" onChange={(e) => setAccountid(e.target.value)} required/>
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Account ID" name = 'accountid' onChange={handleForm} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Customer Phone Number</label>
-                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Customer Phone Number" onChange={(e) => setPhone(e.target.value)} required/>
+                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter Customer Phone Number" name = 'phone' onChange={handleForm} required/>
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="input4" className="form-label">MFI</label>
-                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setMfi(e.target.value)} required>
+                <select className="form-select" id = "input4" aria-label="Default select example" name = 'mfi' onChange={handleForm} required>
                 <option defaultValue>--Select MFI--</option>
                     {mfiData.map((item, index) => 
                             <option key = {index} value = {item.id}>{item.mfi_name}</option>
@@ -179,7 +154,7 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="input4" className="form-label">Branch</label>
-                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setBranch(e.target.value)} required>
+                <select className="form-select" id = "input4" aria-label="Default select example" name = 'branch' onChange={handleForm} required>
                 <option defaultValue>--Select Branch--</option>
                     {branchData.map((item, index) => 
                         <option key = {index} value = {item.id}>{item.branch_name}</option>
@@ -188,7 +163,7 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="input4" className="form-label">State</label>
-                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setState(e.target.value)} required>
+                <select className="form-select" id = "input4" aria-label="Default select example" name = 'state' onChange={handleForm} required>
                 <option defaultValue>--Select State--</option>
                     {stateData.map((item, index) => 
                             <option key = {index} value = {item.id}>{item.state_name}</option>
@@ -197,7 +172,7 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="input4" className="form-label">Vendor Name</label>
-                <select className="form-select" id = "input4" aria-label="Default select example" onChange={(e) => setVendor(e.target.value)} required>
+                <select className="form-select" id = "input4" aria-label="Default select example" name = 'vendor' onChange={handleForm} required>
                 <option defaultValue>--Select Vendor Name--</option>
                     {vendorData.map((item, index) =>
                             <option key = {index} value = {item.id}>{item.vendor_name}</option>
@@ -206,7 +181,7 @@ export default function Complaint(){
                 </div>
                 <div className="col-md-6 mt-4">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Issue</label>
-                <textarea type="text" className="form-control" id="exampleFormControlInput1" placeholder="Explain the Issue" onChange={(e) => setIssue(e.target.value)}/>
+                <textarea type="text" className="form-control" id="exampleFormControlInput1" placeholder="Explain the Issue" name = 'issue' onChange={handleForm}/>
                 </div>
                 <div className='d-flex justify-content-center mt-4'>
                     <button type="submit" className="btn btn-success px-4">Create</button>

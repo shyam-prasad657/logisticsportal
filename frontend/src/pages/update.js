@@ -1,44 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './update.css';
-import { complaints, status } from '../mockData/mockData';
 import axios from 'axios';
+import { useData } from '../components/fetchdata';
 
 function Update() {
     const [accountId, setAccountiD] = useState('');
     const [updatedStatus, setUpdatedstatus] = useState();
     const [remarks, setRemarks] = useState();
     const invalidComplaint = false;
-
+    
     //put()
-    const [data, setData] = useState([]);
-    const [statusData, setStatusdata] = useState([]);
-    const [stateData, setStatedata] = useState([]);
-    const [branchData, setBranchdata] = useState([]);
-
-        useEffect(()=> {//userdb
-                    fetch('http://localhost:8081/test-userdb')
-                    .then(res => res.json())
-                    .then(data => setData(data))
-                    .catch(err => console.log(err))
-                },[data]);
-        useEffect(()=> {//states
-            fetch('http://localhost:8081/states')
-            .then(res => res.json())
-            .then(data => setStatedata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//branch
-            fetch('http://localhost:8081/branch')
-            .then(res => res.json())
-            .then(data => setBranchdata(data))
-            .catch(err => console.log(err))
-        },[]);
-        useEffect(()=> {//status
-            fetch('http://localhost:8081/status')
-            .then(res => res.json())
-            .then(data => setStatusdata(data))
-            .catch(err => console.log(err))
-        },[]);
+    const { data, statusData, stateData, branchData } = useData();
 
         const findStatus = (e) => {
             const x = statusData.find((r) => r.id === e)
