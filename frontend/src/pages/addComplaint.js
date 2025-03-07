@@ -85,18 +85,26 @@ export default function Complaint(){
     try {
         const response = await axios.post("http://localhost:8081/import-excel", { users : excelData });
         alert(response.data.message);
+        window.location.reload();
     } catch(error) {
         console.error("Error Details:", error);
-        const errorMessage = error.response?.data?.message || error?.message || "Unknown error occurred";
-        if (error.response.data.message === "Validation errors found") {
+        const message = error?.response?.data?.message || error?.message || "Unknown error occurred";
+        if (error?.response?.data?.message === "Validation errors found") {
             let errorMessage = "Validation Errors:\n";
-            error.response.data.errors.forEach(err => {
-                errorMessage += `Row ${err.row}: ${err.field} - ${err.message}\n`;
+            error?.response?.data?.errors.forEach(err => {
+                errorMessage += `Row ${err?.row}: ${err?.field} - ${err?.message}\n`;
             });
             alert(errorMessage);
             return false;
         }
-        alert(errorMessage);
+        else if (error?.response?.data?.message === "Account ID already exists") {
+            let errorMessage = "Account ID already exists: \n";
+            error?.response?.data?.duplicates.forEach(err => {
+                errorMessage += `${err} \n`;
+            })
+            alert(errorMessage);
+            window.location.reload();
+        }
     }
    }
 

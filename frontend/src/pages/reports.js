@@ -5,7 +5,7 @@
     import React, { useEffect, useState } from 'react';
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
-import { useData } from '../components/fetchdata';
+import { findMaster, useData } from '../components/fetchdata';
     export default function Reports(){
         const [data, setData] = useState([]);
         const { statusData, branchData, mfiData, vendorData,stateData } = useData();
@@ -22,26 +22,6 @@ import { useData } from '../components/fetchdata';
             }
         )
 
-        const findBranch = (name) => {
-            const x = branchData.find((r) => r.id === name)
-            return x ? x.branch_name : "Branch Not found";
-        }
-        const findState = (name) => {
-            const x = stateData.find((r) => r.id === name)
-            return x ? x.state_name : "State Not found";
-        }
-        const findStatus = (name) => {
-            const x = statusData.find((r) => r.id === name)
-            return x ? x.status_name : "Status Not found";
-        }
-        const findMfi = (name) => {
-            const x = mfiData.find((r) => r.id === name)
-            return x ? x.mfi_name : "Mfi Not found";
-        }
-        const findVendor = (name) => {
-            const x = vendorData.find((r) => r.id === name)
-            return x ? x.vendor_name : "Vendor Not found";
-        }
         const fetchData = async (page = 1) => {
             try {
                 const response = await axios.get('http://localhost:8081/users', {
@@ -74,7 +54,6 @@ import { useData } from '../components/fetchdata';
         const handlefilter = (e) => {
             setFilters({...filters, [e.target.name] : e.target.value})
         }
-        console.log('hi',filters)
           // Fetch data with current filters from first page.
           const handleFetch = () => {
             fetchData(1);
@@ -211,14 +190,14 @@ import { useData } from '../components/fetchdata';
                             <td>{item.clientid}</td>
                             <td>{item.accountid}</td>
                             <td>{item.customerName}</td>
-                            <td>{findBranch(item.branch)}</td>
-                            <td>{findState(item.state)}</td>
-                            <td>{findMfi(item.mfi)}</td>
-                            <td><div className="d-flex justify-content-center"><span className={`status-label ${getStatusClass(findStatus(item.status))} col-md-6`}>{findStatus(item.status)}</span></div></td>
+                            <td>{findMaster(item.branch, branchData, 'branch')}</td>
+                            <td>{findMaster(item.state, stateData, 'state')}</td>
+                            <td>{findMaster(item.mfi, mfiData, 'mfi')}</td>
+                            <td><div className="d-flex justify-content-center"><span className={`status-label ${getStatusClass(findMaster(item.status, statusData, 'status'))} col-md-6`}>{findMaster(item.status, statusData, 'status')}</span></div></td>
                             <td>{item.issue}</td>
                             <td>{item.remarks}</td>
                             <td>{item.customerPhone}</td>
-                            <td>{findVendor(item.vendorName)}</td>
+                            <td>{findMaster(item.vendorName, vendorData, 'vendor')}</td>
                             </tr>
                             ))}
                         </tbody>
@@ -243,7 +222,7 @@ import { useData } from '../components/fetchdata';
                             pageLinkClassName = 'page-link'
                             />
                         {/* Modal */}
-                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div className="modal-dialog">
                             <div className="modal-content">
                             <div className="modal-header">
@@ -252,8 +231,8 @@ import { useData } from '../components/fetchdata';
                             </div>
                             <div className="modal-body">
                                 <b>Customer Name : </b>{selectedItem?.customerName} <br />
-                                <b>Mfi Name : </b>{findMfi(selectedItem?.mfi)} <br />
-                                <b>Current Status: </b>{findStatus(selectedItem?.status)} <br />
+                                <b>Mfi Name : </b>{findMaster(selectedItem?.mfi, mfiData, 'mfi')} <br />
+                                <b>Current Status: </b>{findMaster(selectedItem?.status, statusData, 'status')} <br />
                                 <b>Client ID : </b>{selectedItem?.clientid} <br />
                                 <b>Account ID : </b>{selectedItem?.accountid} <br />
                             </div>
