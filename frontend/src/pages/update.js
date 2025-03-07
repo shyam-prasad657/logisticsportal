@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import './update.css';
 import axios from 'axios';
-import { useData } from '../components/fetchdata';
+import { findMaster, useData } from '../components/fetchdata';
 
 function Update() {
     const [accountId, setAccountiD] = useState('');
@@ -11,20 +11,7 @@ function Update() {
     
     //put()
     const { data, statusData, stateData, branchData } = useData();
-
-        const findStatus = (e) => {
-            const x = statusData.find((r) => r.id === e)
-            return x.status_name
-        }
-        const findBranch = (e) => {
-            const x = branchData.find((r) => r.id === e)
-            return x.branch_name
-        }
-        const findState = (e) => {
-            const x = stateData.find((r) => r.id === e)
-            return x.state_name
-        }
-
+    console.log(data.remarks)
     const handleDownloadTemplate = () => {
         const link = document.createElement('a');
         link.href = `${process.env.PUBLIC_URL}/update-status.xlsx`; // Path to the template file in the public folder
@@ -89,9 +76,9 @@ function Update() {
                                     <div><strong>Customer Name: </strong><i>{item.customerName}</i></div>
                                     <div><strong>Phone Number : </strong><i>{item.customerPhone}</i></div>
                                     <div><strong>Issue : </strong><i>{item.issue}</i></div>
-                                    <div><strong>Current Status : </strong><i>{findStatus(item.status)}</i></div>
-                                    <div><strong>Branch : </strong><i>{findBranch(item.branch)}</i></div>
-                                    <div><strong>State : </strong><i>{findState(item.state)}</i></div>
+                                    <div><strong>Current Status : </strong><i>{findMaster(item.status, statusData, 'status')}</i></div>
+                                    <div><strong>Branch : </strong><i>{findMaster(item.branch, branchData, 'branch')}</i></div>
+                                    <div><strong>State : </strong><i>{findMaster(item.state, stateData, 'state')}</i></div>
                                 </div>
                             ))}
                         </div>

@@ -46,3 +46,8 @@ export const useData = () => {
 
     return {data, setData, statusData, setStatusdata, stateData, setStatedata, branchData, setBranchdata, mfiData, setMfidata, vendorData, setVendordata}
 }
+
+export const findMaster = (name, masterData, field) => {
+    const x = masterData?.find((r) => r.id === name)
+    return x ? x[field + '_name'] : `${field} Not found`;
+}

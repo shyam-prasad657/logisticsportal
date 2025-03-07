@@ -34,6 +34,21 @@ router.post('/import-excel', (req, res) => {
             return res.status(400).json({ message: 'Please fill in all mandatory fields (marked with *)' });
         }
     }
+    const accountids = users.map((e) => e['Account ID*']);
+    const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid IN (?)`;
+    db.query(checkQuery, [accountids], (err, result) => {
+        if (err) {
+            console.error("Error checking Account IDs", err);
+            return res.status(500).json({ message : "Database error while checking account id"});
+        }
+        const existingAccountIds = result.map(row => row.accountid);
+        const duplicateAccountids = accountids.filter((id) => existingAccountIds.includes(id))
+        if(result.length > 0) {
+            return res.status(400).json({
+                message : "Account ID already exists",
+                duplicates : existingAccountIds
+            })
+        }
     
     //Column Mapping: Excel -> SQL Fields
     const columnMapping = {
@@ -169,6 +184,7 @@ router.post('/import-excel', (req, res) => {
         }
         res.json({ message: "Data imported Succesfully", inserted: result.affectedRows})
     })
+})
 })
 
 module.exports = { postRoutes : router }
