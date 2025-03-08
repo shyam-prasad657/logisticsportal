@@ -14,7 +14,7 @@ function buildFilterConditions(query) {
         conditions.push(`accountid = ?`);
         valueParams.push(query.accountId);
     }
-    if(query.clientid) {
+    if(query.clientId) {
         conditions.push(`clientid = ?`);
         valueParams.push(query.clientId);
     }
