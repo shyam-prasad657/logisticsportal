@@ -2,7 +2,7 @@
     import './reports.css';
     import { MdDelete } from "react-icons/md";
     // import 'datatables.net-buttons/js/buttons.colVis'; 
-    import React, { useEffect, useState } from 'react';
+    import React, { useEffect, useMemo, useState } from 'react';
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { findMaster, useData } from '../components/fetchdata';
@@ -11,6 +11,7 @@ import { findMaster, useData } from '../components/fetchdata';
         const { statusData, branchData, mfiData, vendorData,stateData } = useData();
         const [pageCount, setPageCount] = useState(0);
         const [currentPage, setCurrentPage] = useState(0); // zero-indexed
+        const [reset, setReset] = useState(false)
 
         const [filters, setFilters] = useState(
             {
@@ -18,45 +19,46 @@ import { findMaster, useData } from '../components/fetchdata';
                 state : 0,
                 clientId : '',
                 accountId : '',
-                phoneNumber : 0
+                phoneNumber : null
             }
         )
-
-        const fetchData = async (page = 1) => {
-            try {
-                const response = await axios.get('http://localhost:8081/users', {
-                    params : {
-                        page,
-                        status : filters.status || undefined,
-                        state : filters.state || undefined,
-                        clientId : filters.clientId || undefined,
-                        accountId : filters.accountId || undefined,
-                        phoneNumber : filters.phoneNumber || undefined
-                    }
-                });
-                setData(response.data.data);
-                setPageCount(response.data.totalPages)
+            const fetchData = async (page) => {
+                try {
+                    const response = await axios.get('http://localhost:8081/users', {
+                        params : {
+                            page,
+                            status : filters.status || undefined,
+                            state : filters.state || undefined,
+                            clientId : filters.clientId || undefined,
+                            accountId : filters.accountId || undefined,
+                            phoneNumber : filters.phoneNumber || undefined
+                        }
+                    });
+                    setData(response.data.data);
+                    setPageCount(response.data.totalPages)
+                }
+                catch(error) {
+                    console.error('Error fetching data', error);
+                }
             }
-            catch(error) {
-                console.error('Error fetching data', error);
-            }
-        }
+        
         // Initial data load.
         useEffect(() => {
-            fetchData();
-        }, []);
+            fetchData(1);
+        }, [reset]);
 
         // Handle page click event from ReactPaginate.
         const handlePageClick = (event) => {
             setCurrentPage(event.selected)
             fetchData(event.selected + 1)
         }
-        const handlefilter = (e) => {
+        const handlefilter = useMemo = (e) => {
             setFilters({...filters, [e.target.name] : e.target.value})
+            console.log(filters.status)
         }
           // Fetch data with current filters from first page.
           const handleFetch = () => {
-            fetchData(1);
+            fetchData();
         };
         const handleReset = () => {
             setFilters({
@@ -65,9 +67,10 @@ import { findMaster, useData } from '../components/fetchdata';
                 clientId : '',
                 accountId : '',
                 phoneNumber : 0
-            })
-            fetchData(1);
+            });
+            setReset(!reset);
             setCurrentPage(0);
+            console.log("function ran")
         }
 
         const getStatusClass = (status) => {
@@ -128,7 +131,7 @@ import { findMaster, useData } from '../components/fetchdata';
                         </div>
                         <div className="filter-group col-md-4 mb-4">
                         <label htmlFor="col2_filter" className="form-label">Complaint Status</label>
-                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} name = "status" id="col2_filter">
+                        <select className="form-select column_filter" aria-label="Default select example" value = {filters.status} onChange={handlefilter} name = "status" id="col2_filter">
                             <option defaultValue value = {0}>Select Complaint Status</option>
                             {statusData.map((item, index) => 
                                 <option key = {item.id} value = {item.id}>{item.status_name}</option>
@@ -137,7 +140,7 @@ import { findMaster, useData } from '../components/fetchdata';
                         </div>
                         <div className="filter-group col-md-3 mb-4">
                         <label htmlFor="col3_filter" className="form-label">State</label>
-                        <select className="form-select column_filter" aria-label="Default select example" onChange={handlefilter} name  = "state" id = "col3_filter">
+                        <select className="form-select column_filter" aria-label="Default select example" value = {filters.state} onChange={handlefilter} name  = "state" id = "col3_filter">
                             <option defaultValue value = {0}>Select State</option>
                             {stateData.map((item, index) =>
                             <option key = {item.id} value={item.id}>{item.state_name}</option>
@@ -146,15 +149,15 @@ import { findMaster, useData } from '../components/fetchdata';
                         </div>
                         <div className="filter-group col-md-3 mb-4">
                         <label htmlFor="col4_filter" className="form-label">Client ID</label>
-                        <input type="text" className="form-control column_filter" id="col4_filter" onChange={handlefilter} name = "clientId" placeholder="Enter Client ID" />
+                        <input type="text" className="form-control column_filter" id="col4_filter" value = {filters.clientId} onChange={handlefilter} name = "clientId" placeholder="Enter Client ID" />
                         </div>
                         <div className="filter-group col-md-3 mb-4">
                         <label htmlFor="col5_filter" className="form-label">Account ID</label>
-                        <input type="text" className="form-control column_filter" id="col5_filter" onChange={handlefilter} name = "accountId" placeholder="Enter Account ID" />
+                        <input type="text" className="form-control column_filter" id="col5_filter" value = {filters.accountId} onChange={handlefilter} name = "accountId" placeholder="Enter Account ID" />
                         </div>
                         <div className="filter-group col-md-3 mb-4">
                         <label htmlFor="col6_filter" className="form-label">Customer Phone Number</label>
-                        <input type="text" className="form-control column_filter" id="col6_filter" onChange={handlefilter} name = "phoneNumber" placeholder="Enter Customer Ph No" />
+                        <input type="text" className="form-control column_filter" id="col6_filter" value = {filters.phoneNumber} onChange={handlefilter} name = "phoneNumber" placeholder="Enter Customer Ph No" />
                         </div>
                         <div className="d-flex justify-content-around">
                             <button onClick = {handleFetch} className="btn btn-primary px-3">Filter</button>

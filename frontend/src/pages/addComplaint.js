@@ -88,7 +88,6 @@ export default function Complaint(){
         window.location.reload();
     } catch(error) {
         console.error("Error Details:", error);
-        const message = error?.response?.data?.message || error?.message || "Unknown error occurred";
         if (error?.response?.data?.message === "Validation errors found") {
             let errorMessage = "Validation Errors:\n";
             error?.response?.data?.errors.forEach(err => {
