@@ -1,6 +1,7 @@
-  const express = require('express');
-  const db = require('../config/db');
-  const router = express.Router();
+const express = require('express');
+const db = require('../config/db');
+const router = express.Router();
+const tableName = '`test_userdb`';
 
 //Delete
 router.delete('/api/delete/:id', (req, res) => {
@@ -9,7 +10,7 @@ router.delete('/api/delete/:id', (req, res) => {
     if (!id || isNaN(id)) {
         return res.status(400).json({ message: 'Invalid ID provided' }); // 400 - Bad Request
     }   
-    const sql = 'DELETE FROM `test-userdb` WHERE id = ?';
+    const sql = `DELETE FROM ${tableName} WHERE id = ?`;
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error(err);

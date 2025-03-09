@@ -1,6 +1,7 @@
-  const express = require('express');
-  const db = require('../config/db');
-  const router = express.Router();
+const express = require('express');
+const db = require('../config/db');
+const router = express.Router();
+const tableName = '`test_userdb`';
   
   // API to update status
   router.put('/update-status', (req, res) => {
@@ -9,7 +10,7 @@
     if(!accountId, !updatedStatus) {
         return res.status(400).json({ message: 'Account ID and Status are required'});
     }
-    const query = 'UPDATE `test-userdb` SET status = ? , remarks = ? WHERE accountid = ?';
+    const query = `UPDATE ${tableName} SET status = ? , remarks = ? WHERE accountid = ?`;
     db.query(query, [updatedStatus,  remarks, accountId,], (err,result) => {
         if(err) {
             console.log(err);
