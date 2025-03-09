@@ -2,7 +2,7 @@
     import './reports.css';
     import { MdDelete } from "react-icons/md";
     // import 'datatables.net-buttons/js/buttons.colVis'; 
-    import React, { useEffect, useMemo, useState } from 'react';
+    import React, { useEffect, useState } from 'react';
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { findMaster, useData } from '../components/fetchdata';
@@ -10,7 +10,7 @@ import { findMaster, useData } from '../components/fetchdata';
         const [data, setData] = useState([]);
         const { statusData, branchData, mfiData, vendorData,stateData } = useData();
         const [pageCount, setPageCount] = useState(0);
-        const [currentPage, setCurrentPage] = useState(0); // zero-indexed
+        const [currentPage, setCurrentPage] = useState(); // zero-indexed
         const [reset, setReset] = useState(false)
 
         const [filters, setFilters] = useState(
@@ -19,7 +19,9 @@ import { findMaster, useData } from '../components/fetchdata';
                 state : 0,
                 clientId : '',
                 accountId : '',
-                phoneNumber : null
+                phoneNumber : '',
+                from : '',
+                to : ''
             }
         )
             const fetchData = async (page) => {
@@ -52,13 +54,13 @@ import { findMaster, useData } from '../components/fetchdata';
             setCurrentPage(event.selected)
             fetchData(event.selected + 1)
         }
-        const handlefilter = useMemo = (e) => {
+        const handlefilter = (e) => {
             setFilters({...filters, [e.target.name] : e.target.value})
-            console.log(filters.status)
         }
-          // Fetch data with current filters from first page.
-          const handleFetch = () => {
+        // Fetch data with current filters from first page.
+        const handleFetch = () => {
             fetchData();
+            console.log(filters)
         };
         const handleReset = () => {
             setFilters({
@@ -66,7 +68,9 @@ import { findMaster, useData } from '../components/fetchdata';
                 state : 0,
                 clientId : '',
                 accountId : '',
-                phoneNumber : 0
+                phoneNumber : '',
+                from : '',
+                to : ''
             });
             setReset(!reset);
             setCurrentPage(0);
@@ -124,9 +128,9 @@ import { findMaster, useData } from '../components/fetchdata';
                         <div className='filter-group col-md-4 mb-4'>
                         <label htmlFor="" className="form-label">Complaint Issued Date</label>
                         <div className="input-group filter-group col-md-3">
-                        <input type = "date" className="form-control" placeholder="From"/>
+                        <input type = "date" className="form-control" placeholder="From" onChange={handlefilter} value = {filters.from} name = 'from'/>
                         <span className="input-group-text" >to</span>
-                        <input type="date" className="form-control" placeholder="To"/>
+                        <input type="date" className="form-control" placeholder="To" onChange={handlefilter} value = {filters.to} name = 'to'/>
                         </div>
                         </div>
                         <div className="filter-group col-md-4 mb-4">
@@ -188,7 +192,7 @@ import { findMaster, useData } from '../components/fetchdata';
                             {data.map((item, index) => (
                             <tr key = {index}>
                             <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDeleteClick(item)}/></td>
-                            <td>{item.complaintDate}</td>
+                            <td>{item.frontend_date}</td>
                             {/* <td scope="row">{item.id}</td> */}
                             <td>{item.clientid}</td>
                             <td>{item.accountid}</td>

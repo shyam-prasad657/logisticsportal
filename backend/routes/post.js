@@ -1,9 +1,9 @@
 const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
+const tableName = '`test_userdb`';
 
 // API Route to Handle Data Submission
-const tableName = '`test-userdb`';
 router.post('/submit', (req, res) => {
     // const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue} = req.body;
     const {formData} = req.body
@@ -42,7 +42,6 @@ router.post('/import-excel', (req, res) => {
             return res.status(500).json({ message : "Database error while checking account id"});
         }
         const existingAccountIds = result.map(row => row.accountid);
-        const duplicateAccountids = accountids.filter((id) => existingAccountIds.includes(id))
         if(result.length > 0) {
             return res.status(400).json({
                 message : "Account ID already exists",

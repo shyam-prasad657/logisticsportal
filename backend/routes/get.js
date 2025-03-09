@@ -5,16 +5,17 @@ const ExcelJS = require('exceljs');
 const { Parser } = require('json2csv');
 const PDFDocument = require('pdfkit');
 const router = express.Router();
+const tableName = '`test_userdb`';
 
-router.get('/userdb', (req, res)=> {
-    const sql = "SELECT * FROM userdb";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
+// router.get('/userdb', (req, res)=> {
+//     const sql = "SELECT * FROM userdb";
+//     db.query(sql, (err, data)=>{
+//         if(err) return res.json(data);
+//         return res.json(data);
+//     })
+// })
 router.get('/test-userdb', (req, res)=> {
-    const sql = "SELECT * FROM `test-userdb`";
+    const sql = "SELECT * FROM test_userdb";
     db.query(sql, (err, data)=>{
         if(err) return res.json(data);
         return res.json(data);
@@ -58,7 +59,6 @@ router.get('/vendor', (req, res)=> {
 
 //Dynamically calling method
 //report.js
-const tableName = '`test-userdb`';
 router.get('/users', (req, res, next) => {
     let page = parseInt(req.query.page) || 1;
     const limit = 10; //express-paginate
@@ -72,7 +72,7 @@ router.get('/users', (req, res, next) => {
         if (err) return next(err);
 
         //Get total record count to compute total pages
-        const dataQuery = `SELECT * from ${tableName} ${whereClause} LIMIT ? OFFSET ?`;
+        const dataQuery = `SELECT *,DATE_FORMAT(complaintDate, '%d/%m/%Y') AS frontend_date from ${tableName} ${whereClause} LIMIT ? OFFSET ?`;
         db.query(dataQuery,[...valueParams, limit,offset], (err, results) => {
             if (err) return next(err);
             console.log(countResult)
@@ -94,7 +94,7 @@ router.get('/export', (req, res) => {
     const {conditions, valueParams} = buildFilterConditions(req.query);
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : '';
 
-    const exportQuery = `SELECT * FROM ${tableName} ${whereClause}`;
+    const exportQuery = `SELECT *,DATE_FORMAT(complaintDate, '%d/%m/%Y') AS frontend_date FROM ${tableName} ${whereClause}`;
     db.query(exportQuery, valueParams, async(err, results) => {
         if(err){
             console.error(err);
