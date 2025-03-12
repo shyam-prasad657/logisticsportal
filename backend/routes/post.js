@@ -2,29 +2,40 @@ const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
 const tableName = '`test_userdb`';
+const { fetchStates, fetchStatus, fetchMFI, fetchBranch, fetchVendor } = require('./get')
 
 // API Route to Handle Data Submission
 router.post('/submit', (req, res) => {
     // const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue} = req.body;
     const {formData} = req.body
-
+    
     if (!formData.name || !formData.phone || !formData.accountid || !formData.phone || !formData.accountid || !formData.date || !formData.clientid || !formData.mfi || !formData.branch || !formData.state || !formData.vendor) {
-      return res.status(400).json({ error: 'Name and phone number are required.' });
+        return res.status(400).json({ error: 'Name and phone number are required.' });
     }
     const query = `INSERT INTO ${tableName} (customerName, customerPhone, accountid, complaintDate, clientid, mfi, branch, state, vendorName, issue) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?)`;
     db.query(query, [formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue], (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-        return res.status(500).json({ error: 'Database error.' });
-      }
-  
-      res.status(200).json({ message: 'Data saved successfully!' });
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json({ error: 'Database error.' });
+        }
+        
+        res.status(200).json({ message: 'Data saved successfully!' });
     });
-  });
+});
 
-  //import(excel) - Add Complaint
-router.post('/import-excel', (req, res) => {
+//import(excel) - Add Complaint
+router.post('/import-excel/add', async (req, res) => {
     const users = req.body.users;
+    const states = await fetchStates();
+    const vendor = await fetchVendor();
+    const mfi = await fetchMFI();
+    const branch = await fetchBranch();
+    const state_name = states.map((e) => e.state_name);
+    const branch_name = branch.map((e) => e.branch_name);
+    const mfi_name = mfi.map((e) => e.mfi_name);
+    const vendor_name = vendor.map((e) => e.vendor_name);
+
+    // console.log(states.state_name['Karnataka'].id)
     if(!users || users.length === 0){
         return res.status(400).json({message : "No Data Received" });
     }
@@ -62,51 +73,10 @@ router.post('/import-excel', (req, res) => {
         "Vendor Name*" : "vendorName",
         "Issue" : "issue"
     }
-    const stateMapping = {
-        "Tamil Nadu" : 1,
-        "Kerala" : 2,
-        "Telangana" : 3,
-        "Karnataka" : 4
-    }
-    const vendorMapping = {
-        "Prestige" : 1,
-        "Preethi" : 2,
-        "Bajaj" : 3,
-        "Rico" : 4,
-        "Vivo" : 5,
-        "Samsung" : 6,
-        "Whirlpool" : 7,
-        "Haier" : 8,
-        "Hero" : 9,
-    }
-    const branchMapping = {	
-        "Mylapore" : 1,
-        "Ernakulam" : 2,
-        "Madhapur" : 3,
-        "Kochi" : 4,
-        "Coimbatore" : 5,
-        "Mysore" : 6,
-        "Madurai" : 7,
-        "Salem" : 8,
-        "Hyderabad" : 9,
-        "Thiruvananthapuram" : 10
-    }
-    const mfiMapping = {
-        "SBIK" : 1,	
-        "KVBK" : 2,	
-        "HDFK" : 3,	
-        "ICIK" : 4,	
-        "AXIK" : 5,	
-        "SYNK" : 6,	
-        "FDRK" : 7,	
-        "PNBK" : 8,	
-        "UBIK" : 9,	
-        "IDFK" : 10
-    }
     let validationErrors = [];
     users.forEach((user, index) => {
         //check if State is valid
-        if(user["State*"] && !stateMapping[user["State*"]]) {
+        if(user["State*"] && !state_name.includes(user["State*"])) {
             validationErrors.push({
                 row : index + 1,
                 field : "State*",
@@ -115,7 +85,7 @@ router.post('/import-excel', (req, res) => {
             })
         }
         //check if Branch is valid
-        if(user["Branch*"] && !branchMapping[user["Branch*"]]) {
+        if(user["Branch*"] && !branch_name.includes(user["Branch*"])) {
             validationErrors.push({
                 row : index + 1,
                 field : "Branch*",
@@ -124,7 +94,7 @@ router.post('/import-excel', (req, res) => {
             })
         }
         //check if MFI is valid
-        if(user["MFI*"] && !mfiMapping[user["MFI*"]]) {
+        if(user["MFI*"] && !mfi_name.includes(user["MFI*"])) {
             validationErrors.push({
                 row : index + 1,
                 field : "MFI*",
@@ -133,7 +103,7 @@ router.post('/import-excel', (req, res) => {
             })
         }
         //check if Vendor Name is valid
-        if(user["Vendor Name*"] && !vendorMapping[user["Vendor Name*"]]) {
+        if(user["Vendor Name*"] && !vendor_name.includes(user["Vendor Name*"])) {
             validationErrors.push({
                 row : index + 1,
                 field : "Vendor Name*",
@@ -155,20 +125,24 @@ router.post('/import-excel', (req, res) => {
             let value = val[excelCol]; // Get the value from Excel
 
             //Convert State Name to id
-            if(excelCol === "State*" && stateMapping[value]) {
-                return stateMapping[value]
+            if(excelCol === "State*" && state_name.includes(value)) {
+                const temp_state = states.find((e) => e.state_name === value);
+                return temp_state.id
             }
             //Convert Branch Name to id
-            if(excelCol === "Branch*" && branchMapping[value]) {
-                return branchMapping[value]
+            if(excelCol === "Branch*" && branch_name.includes(value)) {
+                const temp_branch = branch.find((e) => e.branch_name === value);
+                return temp_branch.id
             }
             //Convert MFI Name to id
-            if(excelCol === "MFI*" && mfiMapping[value]) {
-                return mfiMapping[value]
+            if(excelCol === "MFI*" && mfi_name.includes(value)) {
+                const temp_mfi = mfi.find((e) => e.mfi_name === value);
+                return temp_mfi.id
             }
             //Convert Vendor Name to id
-            if(excelCol === "Vendor Name*" && vendorMapping[value]) {
-                return vendorMapping[value]
+            if(excelCol === "Vendor Name*" && vendor_name.includes(value)) {
+                const temp_vendor = vendor.find((e) => e.vendor_name === value);
+                return temp_vendor.id
             }
             return value;
         })

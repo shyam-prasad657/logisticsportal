@@ -7,55 +7,71 @@ const PDFDocument = require('pdfkit');
 const router = express.Router();
 const tableName = '`test_userdb`';
 
-// router.get('/userdb', (req, res)=> {
-//     const sql = "SELECT * FROM userdb";
-//     db.query(sql, (err, data)=>{
-//         if(err) return res.json(data);
-//         return res.json(data);
-//     })
-// })
-router.get('/test-userdb', (req, res)=> {
-    const sql = "SELECT * FROM test_userdb";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
-router.get('/status', (req, res)=> {
-    const sql = "SELECT * FROM status";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
-router.get('/states', (req, res)=> {
-    const sql = "SELECT * FROM states";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
-router.get('/mfi', (req, res)=> {
-    const sql = "SELECT * FROM mfi";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
-router.get('/branch', (req, res)=> {
-    const sql = "SELECT * FROM branch";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
-router.get('/vendor', (req, res)=> {
-    const sql = "SELECT * FROM vendor";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(data);
-        return res.json(data);
-    })
-})
+// Function to fetch data from the database
+const fetchData = (tableName) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT * FROM ${tableName}`;
+        db.query(sql, (err, data) => {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+};
+
+// Define routes
+router.get('/test-userdb', async (req, res) => {
+    try {
+        const data = await fetchData('test_userdb');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/status', async (req, res) => {
+    try {
+        const data = await fetchData('status');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/states', async (req, res) => {
+    try {
+        const data = await fetchData('states');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/mfi', async (req, res) => {
+    try {
+        const data = await fetchData('mfi');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/branch', async (req, res) => {
+    try {
+        const data = await fetchData('branch');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/vendor', async (req, res) => {
+    try {
+        const data = await fetchData('vendor');
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 //Dynamically calling method
 //report.js
@@ -144,7 +160,16 @@ router.get('/export', (req, res) => {
     })
 })
 
-module.exports = { getRoutes : router }
+// Export functions to be used in `post.js`
+module.exports = {
+    fetchTestUserDB: () => fetchData('test_userdb'),
+    fetchStatus: () => fetchData('status'),
+    fetchStates: () => fetchData('states'),
+    fetchMFI: () => fetchData('mfi'),
+    fetchBranch: () => fetchData('branch'),
+    fetchVendor: () => fetchData('vendor'),
+    getRoutes : router // Exporting router as well
+};
 
 
 

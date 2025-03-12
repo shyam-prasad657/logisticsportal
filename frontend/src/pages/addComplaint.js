@@ -83,7 +83,7 @@ export default function Complaint(){
    const handleUpload = async () => {
     console.log("Uploading Data: ",excelData); //log data in console
     try {
-        const response = await axios.post("http://localhost:8081/import-excel", { users : excelData });
+        const response = await axios.post("http://localhost:8081/import-excel/add", { users : excelData });
         alert(response.data.message);
         window.location.reload();
     } catch(error) {

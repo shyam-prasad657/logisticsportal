@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import './update.css';
 import axios from 'axios';
+import * as XLSX from "xlsx";
 import { findMaster, useData } from '../components/fetchdata';
 
 function Update() {
@@ -11,7 +12,7 @@ function Update() {
     
     //put()
     const { data, statusData, stateData, branchData } = useData();
-    console.log(data.remarks)
+    // console.log(data.remarks)
     const handleDownloadTemplate = () => {
         const link = document.createElement('a');
         link.href = `${process.env.PUBLIC_URL}/update-status.xlsx`; // Path to the template file in the public folder
@@ -35,12 +36,58 @@ function Update() {
                 alert(error.response.data?.message || 'An unexpected error occurred.');
             }
         }
-
     }
-
     const filteredData = useMemo(
         () => data.filter(item => item.accountid === accountId), [data,accountId]
     )
+
+    //Export File
+    const [excelData, setExcelData] = useState([]);
+    const handleFile = (e) => {
+        const file = e.target.files[0];
+        // console.log('Uploaded file: ',file)
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const data = event.target.result;
+            let workbook;
+
+            if(file.name.endsWith(".csv")) {
+                //Parse CSV file
+                const csvData = XLSX.read(data, {type : "string"});
+                const sheet = csvData.Sheets[csvData.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+                setExcelData(jsonData);
+            } else {
+                // Parse Excel file (.xlsx, .xls)
+                const binaryData = new Uint8Array(data);
+                workbook = XLSX.read(binaryData, {type : "array"});
+                const SheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[SheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                setExcelData(jsonData);
+            }
+        }
+        if (file.name.endsWith(".csv")) {
+            reader.readAsText(file);
+        } else {
+            reader.readAsArrayBuffer(file);
+        }
+        console.log(excelData)
+    }
+    const handleImport = async () => {
+        console.log("Uploading Data", excelData);
+        try {
+            const response = await axios.put("http://localhost:8081/import-excel/update", {update : excelData});
+            alert(response.data.message);
+        }
+        catch(error) {
+            console.error("Error Details: ",error);
+            const mes = error?.response?.data?.accountid;
+            const ac = error?.response?.data?.message;
+            alert(ac);
+        }
+    }
     return (
         <div className='container-fluid' id="update-page">
                 <div className='container update'>
@@ -52,10 +99,10 @@ function Update() {
                 </div>
                 <div className='d-flex justify-content-between'>
                 <div className='col-8'>
-                <input type="file" className="form-control" id="bulkimport"/>
+                <input type="file" className="form-control" id="bulkimport" onChange={handleFile} accept = ".xlsx, .xls, .csv"/>
                 </div>
                 <div>
-                <button type="button" className="btn btn-success">Import</button>
+                <button type="button" className="btn btn-success" onClick={handleImport}>Import</button>
                 </div>
                 </div>
                 </div>
