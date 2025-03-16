@@ -1,8 +1,8 @@
 const express = require('express');
 const db = require('../config/db');
+const { fetchStatus } = require('./get');
 const router = express.Router();
 const tableName = '`test_userdb`';
-const { fetchStatus } = require('./get')
   
   // API to update status
   router.put('/update-status', (req, res) => {
@@ -36,25 +36,53 @@ router.put('/import-excel/update', async (req, res) => {
             return res.status(400).json({message : "Please fill all the mandatory"})
         }
     }
-    const accountIds = update.map((e) => e['Account ID']);
+    const accountIds = update.map((e) => e['Account ID'].toString());
+    let temp = [];
+    for (let i = 0; i < accountIds.length; i++) {
+        for (let j = i + 1; j < accountIds.length; j++) {
+            if (accountIds[i] === accountIds[j]) {
+                temp.push(accountIds[i]);
+            }
+        }
+    }
+    if (temp.length > 0) {
+        return res.status(500).json({message : 'Duplicate Account Ids', duplicates : temp})
+    }
     const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid IN (?)`;
-    const statusData = await fetchStatus();
-    console.log(statusData);
-    db.query(checkQuery, [accountIds], (err, results) => {
+    db.query(checkQuery, [accountIds], async (err, results) => {
         if(err) {
             console.error("Error checking Account IDs", err);
             return res.status(500).json({ message : "Database error while checking account id"});
         }
-        const dbAccountid = results.map((e) => e.accountid)
+        const dbAccountid = results.map((e) => e.accountid);
         let x = [];
-        accountIds.map((e) => dbAccountid.map((map) => {
-            if(!map.includes(e)) {
-                x.push(e)
+        accountIds.forEach((e) => {
+            if(!dbAccountid.includes(e)) {
+                x.push(e);
             }
-        }))
+        })
         if(x.length > 0) {
             return res.status(500).json({ message : "Account ID does not exists", accountid : x});
         }
+        const statusData = await fetchStatus();
+        const status = statusData.map((e) => e.status_name);
+        let stateError = [];
+        update.forEach((lineItem, index) => {
+            if(lineItem["Status"] && !status.includes(lineItem["Status"])) {
+                stateError.push({
+                    row : index + 1,
+                    value : lineItem["Status"],
+                    message : `${lineItem["Status"]} not found in masters`
+                })
+            }
+        })
+        if(stateError.length > 0) {
+            return res.status(400).json({
+                message :'Status Validation',
+                value : stateError
+            });
+        }
+        // Convert Excel data into SQL-compatible format
         return res.status(400).json({message : "Data Inserted"})
     })
 })

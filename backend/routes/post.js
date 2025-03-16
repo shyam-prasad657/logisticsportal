@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
 const tableName = '`test_userdb`';
-const { fetchStates, fetchStatus, fetchMFI, fetchBranch, fetchVendor } = require('./get')
+const { fetchStates, fetchMFI, fetchBranch, fetchVendor } = require('./get')
 
 // API Route to Handle Data Submission
 router.post('/submit', (req, res) => {

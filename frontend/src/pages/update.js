@@ -83,9 +83,32 @@ function Update() {
         }
         catch(error) {
             console.error("Error Details: ",error);
-            const mes = error?.response?.data?.accountid;
             const ac = error?.response?.data?.message;
-            alert(ac);
+            if(ac === 'Status Validation') {
+                let status_message = 'Invalid Status \n';
+                error?.response?.data?.value.forEach((err) => 
+                    status_message += `Row ${err.row} : ${err.message} \n`
+            )
+            alert(status_message)
+            return false;
+        }
+        if (ac === "Account ID does not exists") {
+            let accountid_message = "Account ID does not exists \n";
+            error?.response?.data?.accountid.forEach((err) => 
+                accountid_message += `${err} \n`
+            )
+            alert(accountid_message);
+        return false;
+        }
+        if (ac === "Duplicate Account Ids") {
+            let duplicate_message = "Duplicate Account IDs \n";
+            error?.response?.data?.duplicates.forEach((err) => 
+                duplicate_message += `${err} \n`
+            )
+            alert(duplicate_message);
+        return false;
+        }
+            alert(ac)
         }
     }
     return (
