@@ -115,6 +115,12 @@ import { findMaster, useData } from '../components/fetchdata';
                 console.error('An unexpected error occured.', error);
             }
         }
+
+        //Select Item
+        const [selectItem, setSelectItem] = useState();
+        const handleSelect = (param) => {
+            setSelectItem(param)
+        }
         return(
             <div className= "container-fluid" id = "reports-page">
                 <div className='container reports px-3'>
@@ -195,7 +201,7 @@ import { findMaster, useData } from '../components/fetchdata';
                             <td>{item.frontend_date}</td>
                             {/* <td scope="row">{item.id}</td> */}
                             <td>{item.clientid}</td>
-                            <td>{item.accountid}</td>
+                            <td><a data-bs-toggle="modal" data-bs-target="#order-detail" onClick = {() => handleSelect(item)}>{item.accountid}</a></td>
                             <td>{item.customerName}</td>
                             <td>{findMaster(item.branch, branchData, 'branch')}</td>
                             <td>{findMaster(item.state, stateData, 'state')}</td>
@@ -229,11 +235,11 @@ import { findMaster, useData } from '../components/fetchdata';
                             pageLinkClassName = 'page-link'
                             />
                         {/* Modal */}
-                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="ModalLabel-1" aria-hidden="true">
                         <div className="modal-dialog">
                             <div className="modal-content">
                             <div className="modal-header">
-                                <h1 className="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete it ?</h1>
+                                <h1 className="modal-title fs-5" id="ModalLabel-1">Are you sure you want to delete it ?</h1>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
@@ -249,6 +255,24 @@ import { findMaster, useData } from '../components/fetchdata';
                             </div>
                             </div>
                         </div>
+                        </div>
+                        {/* Modal */}
+                        <div className="modal fade" id="order-detail" tabindex="-1" aria-labelledby="ModalLabel-2" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div className="modal-content">
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="ModalLabel-2">Modal title</h1>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div className="modal-body">
+                                    {selectItem?.customerName}
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" className="btn btn-primary">Save changes</button>
+                                </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

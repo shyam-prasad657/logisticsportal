@@ -25,4 +25,28 @@ function buildFilterConditions(query) {
     return {conditions, valueParams}
 }
 
-module.exports = { buildFilterConditions }
+function updateImportQuery(tableName,values, param) {
+    let caseStatus = '';
+    let caseRemarks = '';
+    let accountIds = [];
+
+    param.forEach((entry) => {
+        accountIds.push(entry["Account ID"]);
+        values.map((e) => {caseStatus += `WHEN ${entry["Account ID"]} THEN ${e} `});
+        if(entry["Remarks"] === undefined) {
+        caseRemarks += `WHEN ${entry["Account ID"]} THEN NULL `;
+        } else {
+            caseRemarks += `WHEN ${entry["Account ID"]} THEN '${entry["Remarks"]}'`;
+        }
+    })
+    const accountIdlist = accountIds.join(", ");
+
+    return `
+    UPDATE ${tableName}
+    SET status = CASE accountid ${caseStatus} END,
+    remarks = CASE accountid ${caseRemarks} END
+    WHERE accountid IN (${accountIdlist});
+    `;
+}
+
+module.exports = { buildFilterConditions, updateImportQuery }

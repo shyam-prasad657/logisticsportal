@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../config/db');
 const { fetchStatus } = require('./get');
+const { updateImportQuery } = require('../utils/helpers');
 const router = express.Router();
 const tableName = '`test_userdb`';
   
@@ -37,6 +38,7 @@ router.put('/import-excel/update', async (req, res) => {
         }
     }
     const accountIds = update.map((e) => e['Account ID'].toString());
+
     let temp = [];
     for (let i = 0; i < accountIds.length; i++) {
         for (let j = i + 1; j < accountIds.length; j++) {
@@ -82,8 +84,20 @@ router.put('/import-excel/update', async (req, res) => {
                 value : stateError
             });
         }
-        // Convert Excel data into SQL-compatible format
-        return res.status(400).json({message : "Data Inserted"})
+        const values = update.map((e) => {
+            if(e["Status"] && status.includes(e["Status"])) {
+                const status_id = statusData.find((x) => x.status_name === e["Status"]);
+                return status_id.id;
+            }
+        })
+        const insert_query = updateImportQuery(tableName, values, update);
+        db.query(insert_query, (err,result) => {
+            if(err) {
+                console.log(err);
+                return res.status(500).json({ message : 'Database error.'});
+            }
+            return res.status(200).json({message : "Data Inserted"})
+        })
     })
 })
 
