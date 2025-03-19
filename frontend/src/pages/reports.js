@@ -6,6 +6,9 @@
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { findMaster, useData } from '../components/fetchdata';
+import DeleteModal from '../components/modal';
+import Modal from '../components/selectModal';
+
     export default function Reports(){
         const [data, setData] = useState([]);
         const { statusData, branchData, mfiData, vendorData,stateData } = useData();
@@ -118,8 +121,8 @@ import { findMaster, useData } from '../components/fetchdata';
 
         //Select Item
         const [selectItem, setSelectItem] = useState();
-        const handleSelect = (param) => {
-            setSelectItem(param)
+        const handleSelect = (id) => {
+            setSelectItem(id)
         }
         return(
             <div className= "container-fluid" id = "reports-page">
@@ -234,46 +237,10 @@ import { findMaster, useData } from '../components/fetchdata';
                             pageClassName = 'page-item'
                             pageLinkClassName = 'page-link'
                             />
+                        {/* Delete Modal */}
+                        <DeleteModal param = {selectedItem} delete_event = {confirmDelete} mfiData = {mfiData} statusData={statusData}/>
                         {/* Modal */}
-                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="ModalLabel-1" aria-hidden="true">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                            <div className="modal-header">
-                                <h1 className="modal-title fs-5" id="ModalLabel-1">Are you sure you want to delete it ?</h1>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <b>Customer Name : </b>{selectedItem?.customerName} <br />
-                                <b>Mfi Name : </b>{findMaster(selectedItem?.mfi, mfiData, 'mfi')} <br />
-                                <b>Current Status: </b>{findMaster(selectedItem?.status, statusData, 'status')} <br />
-                                <b>Client ID : </b>{selectedItem?.clientid} <br />
-                                <b>Account ID : </b>{selectedItem?.accountid} <br />
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                        {/* Modal */}
-                        <div className="modal fade" id="order-detail" tabindex="-1" aria-labelledby="ModalLabel-2" aria-hidden="true">
-                            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div className="modal-content">
-                                <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="ModalLabel-2">Modal title</h1>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                    {selectItem?.customerName}
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary">Save changes</button>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
+                        <Modal param = {selectItem} />
                     </div>
                 </div>
         )

@@ -2,7 +2,8 @@ const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
 const tableName = '`test_userdb`';
-const { fetchStates, fetchMFI, fetchBranch, fetchVendor } = require('./get')
+const { fetchStates, fetchMFI, fetchBranch, fetchVendor } = require('./get');
+const { checkDuplicates } = require('../utils/helpers');
 
 // API Route to Handle Data Submission
 router.post('/submit', (req, res) => {
@@ -46,6 +47,10 @@ router.post('/import-excel/add', async (req, res) => {
         }
     }
     const accountids = users.map((e) => e['Account ID*']);
+    const temp = checkDuplicates(accountids);
+    if( temp.length > 0) {
+        return res.status(500).json({message : 'Duplicate Account IDs in input file', duplicates : temp})
+    }
     const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid IN (?)`;
     db.query(checkQuery, [accountids], (err, result) => {
         if (err) {

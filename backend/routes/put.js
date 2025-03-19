@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../config/db');
 const { fetchStatus } = require('./get');
-const { updateImportQuery } = require('../utils/helpers');
+const { updateImportQuery, checkDuplicates } = require('../utils/helpers');
 const router = express.Router();
 const tableName = '`test_userdb`';
   
@@ -38,15 +38,7 @@ router.put('/import-excel/update', async (req, res) => {
         }
     }
     const accountIds = update.map((e) => e['Account ID'].toString());
-
-    let temp = [];
-    for (let i = 0; i < accountIds.length; i++) {
-        for (let j = i + 1; j < accountIds.length; j++) {
-            if (accountIds[i] === accountIds[j]) {
-                temp.push(accountIds[i]);
-            }
-        }
-    }
+    const temp = checkDuplicates(accountIds);
     if (temp.length > 0) {
         return res.status(500).json({message : 'Duplicate Account Ids', duplicates : temp})
     }

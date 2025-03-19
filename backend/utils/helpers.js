@@ -49,4 +49,16 @@ function updateImportQuery(tableName,values, param) {
     `;
 }
 
-module.exports = { buildFilterConditions, updateImportQuery }
+function checkDuplicates (input) {
+    let temp = [];
+    for (let i = 0; i < input.length; i++) {
+        for (let j = i + 1; j < input.length; j++) {
+            if (input[i] === input[j]) {
+                temp.push(input[i]);
+            }
+        }
+    }
+    return temp;
+}
+
+module.exports = { buildFilterConditions, updateImportQuery, checkDuplicates }

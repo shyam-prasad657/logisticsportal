@@ -104,6 +104,14 @@ export default function Complaint(){
             alert(errorMessage);
             window.location.reload();
         }
+        else if (error?.response?.data?.message === "Duplicate Account IDs in input file") {
+            let duplicate_message = "Duplicate Account IDs \n";
+            error?.response?.data?.duplicates.forEach((err) => 
+                duplicate_message += `${err} \n`
+            )
+            alert(duplicate_message);
+        return false;
+        }
     }
    }
 
