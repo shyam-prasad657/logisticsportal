@@ -8,7 +8,7 @@ function buildFilterConditions(query) {
     }
     if(query.state) {
         conditions.push(`state = ?`);
-        valueParams.push(query.status);
+        valueParams.push(query.state);
     }
     if(query.accountId) {
         conditions.push(`accountid = ?`);
@@ -21,6 +21,10 @@ function buildFilterConditions(query) {
     if(query.phoneNumber) {
         conditions.push(`customerPhone = ?`);
         valueParams.push(query.phoneNumber);
+    }
+    if(query.from && query.to) {
+        conditions.push(`complaintDate >= ? AND complaintDate <= ?`);
+        valueParams.push(query.from, query.to);
     }
     return {conditions, valueParams}
 }

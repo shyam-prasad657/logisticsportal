@@ -1,6 +1,6 @@
 export default function Modal ({ param }) {
     return(
-        <div className="modal fade" id="order-detail" tabindex="-1" aria-labelledby="ModalLabel-2" aria-hidden="true">
+        <div className="modal fade" id="order-detail" tabIndex="-1" aria-labelledby="ModalLabel-2" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                 <div className="modal-header">

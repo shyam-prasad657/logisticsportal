@@ -1,7 +1,6 @@
     import { complaints, status, state } from '../mockData/mockData';
     import './reports.css';
     import { MdDelete } from "react-icons/md";
-    // import 'datatables.net-buttons/js/buttons.colVis'; 
     import React, { useEffect, useState } from 'react';
     import ReactPaginate from 'react-paginate';
 import axios from 'axios';
@@ -36,7 +35,9 @@ import Modal from '../components/selectModal';
                             state : filters.state || undefined,
                             clientId : filters.clientId || undefined,
                             accountId : filters.accountId || undefined,
-                            phoneNumber : filters.phoneNumber || undefined
+                            phoneNumber : filters.phoneNumber || undefined,
+                            from : filters.from || undefined,
+                            to : filters.to || undefined
                         }
                     });
                     setData(response.data.data);
@@ -58,12 +59,15 @@ import Modal from '../components/selectModal';
             fetchData(event.selected + 1)
         }
         const handlefilter = (e) => {
-            setFilters({...filters, [e.target.name] : e.target.value})
+            setFilters({...filters, [e.target.name] : e.target.value});
+            console.log(filters)
         }
         // Fetch data with current filters from first page.
         const handleFetch = () => {
+            if(!filters.from || !filters.to) {
+                setFilters({...filters, from : "", to : ""})
+            }
             fetchData();
-            console.log(filters)
         };
         const handleReset = () => {
             setFilters({
