@@ -29,21 +29,15 @@ function buildFilterConditions(query) {
     return {conditions, valueParams}
 }
 
-function updateImportQuery(tableName,values, param) {
+function updateImportQuery(tableName, param) {
     let caseStatus = '';
     let caseRemarks = '';
-    let accountIds = [];
 
-    param.forEach((entry) => {
-        accountIds.push(entry["Account ID"]);
-        values.map((e) => {caseStatus += `WHEN ${entry["Account ID"]} THEN ${e} `});
-        if(entry["Remarks"] === undefined) {
-        caseRemarks += `WHEN ${entry["Account ID"]} THEN NULL `;
-        } else {
-            caseRemarks += `WHEN ${entry["Account ID"]} THEN '${entry["Remarks"]}'`;
-        }
+    param.forEach(() => {
+        caseStatus += ' WHEN ? THEN ? ';
+        caseRemarks += ' WHEN ? THEN ? ';
     })
-    const accountIdlist = accountIds.join(", ");
+    const accountIdlist = param.map(() => '?').join(",");
 
     return `
     UPDATE ${tableName}

@@ -76,14 +76,29 @@ router.put('/import-excel/update', async (req, res) => {
                 value : stateError
             });
         }
-        const values = update.map((e) => {
+        const insert_query = updateImportQuery(tableName, update);
+        let id = [];
+        update.forEach((e) => {
+            if(e["Account ID"]) {
+                id.push(e["Account ID"])
+            }
             if(e["Status"] && status.includes(e["Status"])) {
                 const status_id = statusData.find((x) => x.status_name === e["Status"]);
-                return status_id.id;
+                id.push(status_id.id);
+            }
+        });
+        update.forEach((e) => {
+            if(e["Account ID"]) {
+                id.push(e["Account ID"])
+            }
+            if(e["Remarks"]) {
+                id.push(e["Remarks"]);
+            } else if(e["Remarks"] === undefined) {
+                id.push('');
             }
         })
-        const insert_query = updateImportQuery(tableName, values, update);
-        db.query(insert_query, (err,result) => {
+        console.log(id);
+        db.query(insert_query,[...id, ...update.map((e) => e["Account ID"])], (err,result) => {
             if(err) {
                 console.log(err);
                 return res.status(500).json({ message : 'Database error.'});
