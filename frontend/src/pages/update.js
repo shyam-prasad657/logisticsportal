@@ -30,11 +30,8 @@ function Update() {
             alert(response.data.message);
         } catch (error) {
             console.error('Error updating status:', error);
-            if (!error.response) {
-                alert('Network error: Unable to connect to the server.');
-            } else {
-                alert(error.response.data?.message || 'An unexpected error occurred.');
-            }
+            alert(error?.response?.data?.message || 'An unexpected error occurred.');
+            
         }
     }
     const filteredData = useMemo(
