@@ -150,7 +150,7 @@ import Modal from '../components/selectModal';
                         <label htmlFor="col2_filter" className="form-label">Complaint Status</label>
                         <select className="form-select column_filter" aria-label="Default select example" value = {filters.status} onChange={handlefilter} name = "status" id="col2_filter">
                             <option defaultValue value = {0}>Select Complaint Status</option>
-                            {statusData.map((item, index) => 
+                            {statusData?.map((item, index) => 
                                 <option key = {item.id} value = {item.id}>{item.status_name}</option>
                             )}
                             </select>
@@ -159,7 +159,7 @@ import Modal from '../components/selectModal';
                         <label htmlFor="col3_filter" className="form-label">State</label>
                         <select className="form-select column_filter" aria-label="Default select example" value = {filters.state} onChange={handlefilter} name  = "state" id = "col3_filter">
                             <option defaultValue value = {0}>Select State</option>
-                            {stateData.map((item, index) =>
+                            {stateData?.map((item, index) =>
                             <option key = {item.id} value={item.id}>{item.state_name}</option>
                             )}
                         </select>

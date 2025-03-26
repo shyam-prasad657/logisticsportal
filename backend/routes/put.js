@@ -18,9 +18,6 @@ const tableName = '`test_userdb`';
                 console.log(err);
                 return res.status(500).json({ message : 'Database error.'});
             }
-            if(result.affectedRows === 0) {
-                return res.status(404).json({ message : 'No user found with the given Account ID'})
-            }
             if(result.affectedRows > 0) {
                 const historyQuery = "INSERT INTO order_history (accountid, action, remarks, status, created_at) VALUES (?, ?, ?, ?, NOW())"
                 db.query(historyQuery, [accountId, 'UPDATE', remarks, updatedStatus], async(historyError, historyResult) => {
@@ -108,13 +105,33 @@ router.put('/import-excel/update', async (req, res) => {
                 id.push('');
             }
         })
-        console.log(id);
+        const historyValues  = update.map((e) => {
+            if(e["Status"]) {
+                const status_id = statusData.find((x) => x.status_name === e["Status"]);
+                e["Status"] = status_id.id;
+            }
+            const valuesArray = Object.values(e);
+            valuesArray.push('IMPORT UPDATE', new Date());
+            return valuesArray;
+        })
+        console.log(historyValues);
         db.query(insert_query,[...id, ...update.map((e) => e["Account ID"])], (err,result) => {
             if(err) {
                 console.log(err);
                 return res.status(500).json({ message : 'Database error.'});
             }
-            return res.status(200).json({message : "Data Inserted"})
+            if(result.affectedRows > 0) {
+                const historyQuery = "INSERT INTO order_history (accountid, status, remarks, action, created_at) VALUES ?"
+                db.query(historyQuery, [historyValues], async(historyError, historyResult) => {
+                    if(historyResult) {
+                        return res.status(200).json({ message : 'Status snd history Imported successfully!'});
+                    }
+                    if(historyError) {
+                        console.log(historyError);
+                        res.status(500).json({ message : 'Error while inserting history data'})
+                    }
+                })
+            }
         })
     })
 })

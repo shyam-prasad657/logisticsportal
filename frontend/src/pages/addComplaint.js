@@ -162,7 +162,7 @@ export default function Complaint(){
                 <label htmlFor="input4" className="form-label">MFI</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" name = 'mfi' onChange={handleForm} required>
                 <option defaultValue>--Select MFI--</option>
-                    {mfiData.map((item, index) => 
+                    {mfiData?.map((item, index) => 
                             <option key = {index} value = {item.id}>{item.mfi_name}</option>
                     )}
                 </select>
@@ -171,7 +171,7 @@ export default function Complaint(){
                 <label htmlFor="input4" className="form-label">Branch</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" name = 'branch' onChange={handleForm} required>
                 <option defaultValue>--Select Branch--</option>
-                    {branchData.map((item, index) => 
+                    {branchData?.map((item, index) => 
                         <option key = {index} value = {item.id}>{item.branch_name}</option>
                     )}
                 </select>
@@ -180,7 +180,7 @@ export default function Complaint(){
                 <label htmlFor="input4" className="form-label">State</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" name = 'state' onChange={handleForm} required>
                 <option defaultValue>--Select State--</option>
-                    {stateData.map((item, index) => 
+                    {stateData?.map((item, index) => 
                             <option key = {index} value = {item.id}>{item.state_name}</option>
                     )}
                 </select>
@@ -189,7 +189,7 @@ export default function Complaint(){
                 <label htmlFor="input4" className="form-label">Vendor Name</label>
                 <select className="form-select" id = "input4" aria-label="Default select example" name = 'vendor' onChange={handleForm} required>
                 <option defaultValue>--Select Vendor Name--</option>
-                    {vendorData.map((item, index) =>
+                    {vendorData?.map((item, index) =>
                             <option key = {index} value = {item.id}>{item.vendor_name}</option>
                     )}
                 </select>

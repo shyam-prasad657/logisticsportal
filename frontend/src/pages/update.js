@@ -11,7 +11,7 @@ function Update() {
     const invalidComplaint = false;
     
     //put()
-    const { data, statusData, stateData, branchData } = useData();
+    const { data, setData, statusData, stateData, branchData } = useData();
     // console.log(data.remarks)
     const handleDownloadTemplate = () => {
         const link = document.createElement('a');
@@ -27,6 +27,9 @@ function Update() {
         try {
             console.log('Payload:', { accountId, updatedStatus, remarks });
             const response = await axios.put('http://localhost:8081/update-status', { accountId, updatedStatus, remarks });
+            // if(response.data.message) {
+            //     setData(); //Mutate data by swr
+            // }
             alert(response.data.message);
         } catch (error) {
             console.error('Error updating status:', error);
@@ -35,7 +38,7 @@ function Update() {
         }
     }
     const filteredData = useMemo(
-        () => data.filter(item => item.accountid === accountId), [data,accountId]
+        () => data?.filter(item => item.accountid === accountId), [data,accountId]
     )
 
     //Export File
@@ -76,6 +79,9 @@ function Update() {
         console.log("Uploading Data", excelData);
         try {
             const response = await axios.put("http://localhost:8081/import-excel/update", {update : excelData});
+            // if(response.data.message) {
+            //     setData(); //Mutate data by swr
+            // }
             alert(response.data.message);
         }
         catch(error) {
@@ -133,12 +139,12 @@ function Update() {
                         <div className="col-md-3">
                             <label htmlFor="exampleFormControlInput1" className="form-label">Account ID</label>
                             <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Account ID" onChange={(e) => setAccountiD(e.target.value)} required />
-                            {filteredData.length === 0 && accountId !== '' && !invalidComplaint && (
+                            {filteredData?.length === 0 && accountId !== '' && !invalidComplaint && (
                                 <div>
                                     <p className='error'>Complaint Number does not exist</p>
                                 </div>
                             )}
-                            {filteredData.map((item,index) => (
+                            {filteredData?.map((item,index) => (
                                 <div key={index} className='p-2'>
                                     <div><strong>Customer Name: </strong><i>{item.customerName}</i></div>
                                     <div><strong>Phone Number : </strong><i>{item.customerPhone}</i></div>
@@ -157,12 +163,14 @@ function Update() {
                             <label htmlFor="input4" className="form-label">Status</label>
                             <select className="form-select" id="input4" aria-label="Default select example" onChange={(e) => setUpdatedstatus(e.target.value)}>
                                 <option defaultValue>--Select Status--</option>
-                                {statusData.map((item, index) => 
+                                {statusData?.map((item, index) => 
                                 <option key = {index} value = {item.id}>{item.status_name}</option>
                                 )}
                             </select>
                             <div className="d-flex justify-content-end mt-4">
-                            <button type="submit" className="btn btn-primary">Update Status</button>
+                            <button type="submit" className="btn btn-primary" 
+                                disabled = {filteredData?.length === 0 && accountId !== '' && !invalidComplaint}>
+                                Update Status</button>
                             </div>
                         </div>
                     </div>
