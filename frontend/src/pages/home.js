@@ -3,12 +3,12 @@ import { useData } from '../components/fetchdata';
 
 export default function Home(){
     const { data } = useData();
-    const totalCount = data.length;
-    const replacementIssuedCount = data.filter(item => item.status === 4).length;
-    const replacementDoneCount = data.filter(item => item.status === 5).length;
-    const closedCount = data.filter(item => item.status === 3).length;
-    const pendingCount = data.filter(item => item.status === 1 ).length;
-    const resolutionPendingCount = data.filter(item => item.status === 2 ).length;
+    const totalCount = data?.length;
+    const replacementIssuedCount = data?.filter(item => item.status === 4).length;
+    const replacementDoneCount = data?.filter(item => item.status === 5).length;
+    const closedCount = data?.filter(item => item.status === 3).length;
+    const pendingCount = data?.filter(item => item.status === 1 ).length;
+    const resolutionPendingCount = data?.filter(item => item.status === 2 ).length;
 
     return(
         <div className='container-fluid' id = "home-page">

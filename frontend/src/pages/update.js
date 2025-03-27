@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import './update.css';
 import axios from 'axios';
 import * as XLSX from "xlsx";
 import { findMaster, useData } from '../components/fetchdata';
+import useSWR, { mutate } from 'swr';
 
 function Update() {
     const [accountId, setAccountiD] = useState('');
     const [updatedStatus, setUpdatedstatus] = useState();
     const [remarks, setRemarks] = useState();
-    const invalidComplaint = false;
     
     //put()
-    const { data, setData, statusData, stateData, branchData } = useData();
+    const { statusData, stateData, branchData } = useData();
     // console.log(data.remarks)
     const handleDownloadTemplate = () => {
         const link = document.createElement('a');
@@ -34,12 +34,16 @@ function Update() {
         } catch (error) {
             console.error('Error updating status:', error);
             alert(error?.response?.data?.message || 'An unexpected error occurred.');
-            
         }
     }
-    const filteredData = useMemo(
-        () => data?.filter(item => item.accountid === accountId), [data,accountId]
-    )
+    const fetcher = (url) => fetch(url).then((res) => res.json());
+    const {data, error } = useSWR(accountId ? `http://localhost:8081/getValue?id=${accountId}` : null, fetcher)
+    const handleFind = (e) => {
+        console.log(e.target.value);
+        setAccountiD(e.target.value);
+        mutate(`http://localhost:8081/getValue?id=${accountId}`);
+    }
+    console.log(error);
 
     //Export File
     const [excelData, setExcelData] = useState([]);
@@ -138,20 +142,20 @@ function Update() {
                     <div className='d-flex justify-content-around'>
                         <div className="col-md-3">
                             <label htmlFor="exampleFormControlInput1" className="form-label">Account ID</label>
-                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Account ID" onChange={(e) => setAccountiD(e.target.value)} required />
-                            {filteredData?.length === 0 && accountId !== '' && !invalidComplaint && (
+                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Account ID" onBlur={handleFind} required />
+                            {!data?.data && (
                                 <div>
-                                    <p className='error'>Complaint Number does not exist</p>
+                                    <p className='error'>{data?.message}</p>
                                 </div>
                             )}
-                            {filteredData?.map((item,index) => (
+                            {data?.data?.map((item,index) => (
                                 <div key={index} className='p-2'>
-                                    <div><strong>Customer Name: </strong><i>{item.customerName}</i></div>
-                                    <div><strong>Phone Number : </strong><i>{item.customerPhone}</i></div>
-                                    <div><strong>Issue : </strong><i>{item.issue}</i></div>
-                                    <div><strong>Current Status : </strong><i>{findMaster(item.status, statusData, 'status')}</i></div>
-                                    <div><strong>Branch : </strong><i>{findMaster(item.branch, branchData, 'branch')}</i></div>
-                                    <div><strong>State : </strong><i>{findMaster(item.state, stateData, 'state')}</i></div>
+                                    <div><strong>Customer Name: </strong><i>{item?.customerName}</i></div>
+                                    <div><strong>Phone Number : </strong><i>{item?.customerPhone}</i></div>
+                                    <div><strong>Issue : </strong><i>{item?.issue}</i></div>
+                                    <div><strong>Current Status : </strong><i>{findMaster(item?.status, statusData, 'status')}</i></div>
+                                    <div><strong>Branch : </strong><i>{findMaster(item?.branch, branchData, 'branch')}</i></div>
+                                    <div><strong>State : </strong><i>{findMaster(item?.state, stateData, 'state')}</i></div>
                                 </div>
                             ))}
                         </div>
@@ -164,12 +168,12 @@ function Update() {
                             <select className="form-select" id="input4" aria-label="Default select example" onChange={(e) => setUpdatedstatus(e.target.value)}>
                                 <option defaultValue>--Select Status--</option>
                                 {statusData?.map((item, index) => 
-                                <option key = {index} value = {item.id}>{item.status_name}</option>
+                                <option key = {index} value = {item?.id}>{item?.status_name}</option>
                                 )}
                             </select>
                             <div className="d-flex justify-content-end mt-4">
                             <button type="submit" className="btn btn-primary" 
-                                disabled = {filteredData?.length === 0 && accountId !== '' && !invalidComplaint}>
+                                disabled = {!data?.data || error}>
                                 Update Status</button>
                             </div>
                         </div>

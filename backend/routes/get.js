@@ -159,6 +159,24 @@ router.get('/export', (req, res) => {
           }
     })
 })
+router.get('/getValue', (req, res) => {
+    const id = req.query.id;
+    // console.log(id)
+    const query = `SELECT * from ${tableName} where accountid = ?`
+        db.query(query, [id], (err, result) => {
+            if (result.length > 0) {
+                return res.status(200).json({data : result})
+            }
+            if(result.length === 0) {
+                return res.status(500).json({message : 'No such data found'})
+            }
+            if(err) {
+                return res.status(500).json({error : err.message, message : 'no such data found'})
+            }
+            console.log(result)
+        });
+        
+})
 
 // Export functions to be used in `post.js`
 module.exports = {
