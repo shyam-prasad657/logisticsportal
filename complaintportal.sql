@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2025 at 04:15 PM
+-- Generation Time: Apr 03, 2025 at 05:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,6 +79,42 @@ INSERT INTO `mfi` (`id`, `mfi_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `order_history`
+--
+
+CREATE TABLE `order_history` (
+  `id` int(11) NOT NULL,
+  `accountid` varchar(255) NOT NULL,
+  `action` varchar(255) NOT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_history`
+--
+
+INSERT INTO `order_history` (`id`, `accountid`, `action`, `remarks`, `status`, `created_at`) VALUES
+(1, '12321312', 'UPDATE', 'test in process', 1, '2025-03-26 21:04:07'),
+(2, '12321312', 'UPDATE', 'test resolved', 3, '2025-03-26 21:25:51'),
+(3, '12321312', 'UPDATE', 'test pending', 2, '2025-03-26 21:29:19'),
+(4, '1234567895', '1234567893', 'I', 0, '2025-03-26 21:50:06'),
+(5, '1234567895', '1234567893', 'IMPORT UPDATE', 0, '2025-03-26 21:50:46'),
+(6, '1234567895', 'IMPORT UPDATE', '1', 0, '2025-03-26 22:49:38'),
+(7, '1234567893', 'IMPORT UPDATE', '3', 0, '2025-03-26 22:49:38'),
+(8, '1234567895', 'IMPORT UPDATE', 'test Inprocess', 1, '2025-03-26 22:50:59'),
+(9, '1234567893', 'IMPORT UPDATE', 'test resolved', 3, '2025-03-26 22:50:59'),
+(10, '1234567895', 'IMPORT UPDATE', 'test Inprocess', 1, '2025-03-26 22:52:08'),
+(11, '1234567893', 'IMPORT UPDATE', 'test resolved', 3, '2025-03-26 22:52:08'),
+(12, '1234567893', 'IMPORT UPDATE', 'nil2', 1, '2025-03-26 22:52:58'),
+(13, '1234567895', 'IMPORT UPDATE', 'nil', 3, '2025-03-26 22:52:58'),
+(14, '12321312', 'UPDATE', 'test raised', 4, '2025-03-27 15:36:17'),
+(15, '12321312', 'UPDATE', 'test resolved', 3, '2025-03-27 16:21:23');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `states`
 --
 
@@ -122,36 +158,36 @@ INSERT INTO `status` (`id`, `status_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `test-userdb`
+-- Table structure for table `test_userdb`
 --
 
-CREATE TABLE `test-userdb` (
+CREATE TABLE `test_userdb` (
   `id` int(11) NOT NULL,
-  `complaintDate` date DEFAULT NULL,
-  `customerName` varchar(100) DEFAULT NULL,
-  `customerPhone` bigint(20) DEFAULT NULL,
-  `mfi` int(10) DEFAULT NULL,
+  `complaintDate` date NOT NULL,
+  `customerName` varchar(100) NOT NULL,
+  `customerPhone` bigint(20) NOT NULL,
+  `mfi` int(10) NOT NULL,
   `branch` int(100) NOT NULL,
   `state` int(50) NOT NULL,
-  `status` int(50) NOT NULL,
+  `status` int(50) NOT NULL DEFAULT 1,
   `issue` text DEFAULT NULL,
-  `clientid` varchar(20) DEFAULT NULL,
-  `accountid` varchar(20) DEFAULT NULL,
+  `clientid` varchar(20) NOT NULL,
+  `accountid` varchar(20) NOT NULL,
   `vendorName` int(100) NOT NULL,
   `remarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `test-userdb`
+-- Dumping data for table `test_userdb`
 --
 
-INSERT INTO `test-userdb` (`id`, `complaintDate`, `customerName`, `customerPhone`, `mfi`, `branch`, `state`, `status`, `issue`, `clientid`, `accountid`, `vendorName`, `remarks`) VALUES
-(1, '2023-01-12', 'Ravi Kumar', 9123456780, 1, 1, 1, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '0987654321', 9, 'Issue resolved promptly.'),
+INSERT INTO `test_userdb` (`id`, `complaintDate`, `customerName`, `customerPhone`, `mfi`, `branch`, `state`, `status`, `issue`, `clientid`, `accountid`, `vendorName`, `remarks`) VALUES
+(1, '2023-01-12', 'Ravi Kumar', 9123456780, 1, 1, 1, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '0987654321', 9, NULL),
 (2, '2023-01-15', 'Lakshmi Nair', 9123456781, 2, 2, 2, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567891', 8, 'Customer satisfied with the resolution.'),
-(3, '2023-01-18', 'Rajesh Reddy', 9123456782, 3, 3, 3, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567892', 7, 'Follow-up required.'),
-(4, '2023-01-20', 'Priya Menon', 9123456783, 4, 4, 2, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567893', 6, 'Replacement in progress.'),
+(3, '2023-01-18', 'Rajesh Reddy', 9123456782, 3, 3, 3, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567892', 7, NULL),
+(4, '2023-01-20', 'Priya Menon', 9123456783, 4, 4, 2, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567893', 6, 'nil2'),
 (5, '2023-01-22', 'Venkatesh Iyer', 9123456784, 5, 5, 1, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567894', 5, 'Awaiting replacement confirmation.'),
-(6, '2023-01-24', 'Meenakshi Sundaram', 9123456785, 6, 6, 4, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567895', 4, 'Pending further investigation.'),
+(6, '2023-01-24', 'Meenakshi Sundaram', 9123456785, 6, 6, 4, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567895', 4, 'nil'),
 (7, '2023-01-26', 'Anand Narayanan', 9123456786, 7, 7, 1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567896', 3, 'Issue fixed, no further action required.'),
 (8, '2023-01-28', 'Divya Ramesh', 9123456787, 8, 8, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567897', 2, 'Need more information from customer.'),
 (9, '2023-01-30', 'Suresh Babu', 9123456788, 9, 9, 3, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567898', 1, 'Escalated to higher authority.'),
@@ -194,7 +230,39 @@ INSERT INTO `test-userdb` (`id`, `complaintDate`, `customerName`, `customerPhone
 (46, '2023-04-13', 'Hari Krishnan', 9123456825, 8, 6, 4, 5, 'Warranty claim rejected.', '123490', '1234567935', 7, 'Issue resolved after review.'),
 (47, '2023-04-15', 'Aditi Ramesh', 9123456826, 1, 7, 1, 3, 'Customer unhappy with service.', '123491', '1234567936', 5, 'Escalated to support team.'),
 (48, '2023-04-17', 'Manoj Shetty', 9123456827, 9, 8, 2, 1, 'Order not delivered.', '123492', '1234567937', 4, 'Delivery expedited.'),
-(49, '2023-04-19', 'Anjali Mohan', 9123456828, 10, 9, 3, 2, 'Issue with refund process.', '123493', '1234567938', 6, 'Refund issued successfully.');
+(50, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424245', 2, NULL),
+(53, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing import post backend routing', '434', '3424246', 2, NULL),
+(54, '2001-05-22', 'fsdsf', 21123123, 3, 1, 2, 1, '7978797', '2123312', '3121233', 6, NULL),
+(55, '0212-02-22', 'fdssdfs', 312321, 1, 10, 4, 5, 'iojho..', '21312', '213123', 7, 'uuyt'),
+(56, '2001-05-27', 'Shyam Prasad', 123123, 3, 10, 3, 1, 'issue testing post dynamic state management', '321312', '312312', 6, NULL),
+(58, '2001-05-27', 'shyams', 322133, 2, 10, 1, 1, 'testing post state management2', '312312', '231231', 5, NULL),
+(59, '0000-00-00', 'shyasd', 42432, 9, 10, 4, 1, '', '2312321', '21312313222', 7, NULL),
+(133, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '213123123', 2, NULL),
+(134, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '132312312', 2, NULL),
+(135, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '213123121', 2, NULL),
+(136, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '132312311', 2, NULL),
+(137, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '2131231211', 2, NULL),
+(138, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '1323123112', 2, NULL),
+(139, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '3', 2, NULL),
+(140, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '4', 2, NULL),
+(141, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '5', 2, NULL),
+(142, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '7', 2, NULL),
+(143, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '8', 2, NULL),
+(144, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '9', 2, NULL),
+(145, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '10', 2, NULL),
+(146, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '11', 2, NULL),
+(163, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 3, 'testing accountid validation', '434', '12', 2, NULL),
+(164, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '13', 2, NULL),
+(165, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 4, 'testing accountid validation', '434', '14', 2, NULL),
+(166, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '15', 2, NULL),
+(169, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '16', 2, NULL),
+(171, '0001-03-22', 'dsasdsa', 123123213, 1, 7, 4, 3, 'ertyui', '21312312', '12321312', 7, 'test resolved'),
+(172, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '17', 2, NULL),
+(173, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '18', 2, NULL),
+(174, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '19', 2, NULL),
+(175, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '20', 2, NULL),
+(176, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing accountid validation', '434', '21', 2, NULL),
+(177, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, 'testing acountid validation', '434', '22', 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -204,16 +272,16 @@ INSERT INTO `test-userdb` (`id`, `complaintDate`, `customerName`, `customerPhone
 
 CREATE TABLE `userdb` (
   `id` int(11) NOT NULL,
-  `complaintDate` date DEFAULT NULL,
-  `customerName` varchar(100) DEFAULT NULL,
-  `customerPhone` bigint(20) DEFAULT NULL,
-  `mfi` int(10) DEFAULT NULL,
+  `complaintDate` date NOT NULL,
+  `customerName` varchar(100) NOT NULL,
+  `customerPhone` bigint(20) NOT NULL,
+  `mfi` int(10) NOT NULL,
   `branch` int(100) NOT NULL,
   `state` int(50) NOT NULL,
-  `status` int(50) NOT NULL,
+  `status` int(50) NOT NULL DEFAULT 1,
   `issue` text DEFAULT NULL,
-  `clientid` varchar(20) DEFAULT NULL,
-  `accountid` varchar(20) DEFAULT NULL,
+  `clientid` varchar(20) NOT NULL,
+  `accountid` varchar(20) NOT NULL,
   `vendorName` int(100) NOT NULL,
   `remarks` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -223,8 +291,8 @@ CREATE TABLE `userdb` (
 --
 
 INSERT INTO `userdb` (`id`, `complaintDate`, `customerName`, `customerPhone`, `mfi`, `branch`, `state`, `status`, `issue`, `clientid`, `accountid`, `vendorName`, `remarks`) VALUES
-(1, '2023-01-12', 'Ravi Kumar', 9123456780, 1, 1, 1, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '0987654321', 9, 'Issue resolved promptly.'),
-(2, '2023-01-15', 'Lakshmi Nair', 9123456781, 2, 2, 2, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567891', 8, 'Customer satisfied with the resolution.'),
+(1, '2023-01-12', 'Ravi Kumar', 9123456780, 1, 1, 1, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '0987654321', 9, 'test_accountid'),
+(2, '2023-01-15', 'Lakshmi Nair', 9123456781, 2, 2, 2, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567891', 8, 'test'),
 (3, '2023-01-18', 'Rajesh Reddy', 9123456782, 3, 3, 3, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567892', 7, 'Follow-up required.'),
 (4, '2023-01-20', 'Priya Menon', 9123456783, 4, 4, 2, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567893', 6, 'Replacement in progress.'),
 (5, '2023-01-22', 'Venkatesh Iyer', 9123456784, 5, 5, 1, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567894', 5, 'Awaiting replacement confirmation.'),
@@ -232,7 +300,42 @@ INSERT INTO `userdb` (`id`, `complaintDate`, `customerName`, `customerPhone`, `m
 (7, '2023-01-26', 'Anand Narayanan', 9123456786, 7, 7, 1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567896', 3, 'Issue fixed, no further action required.'),
 (8, '2023-01-28', 'Divya Ramesh', 9123456787, 8, 8, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567897', 2, 'Need more information from customer.'),
 (9, '2023-01-30', 'Suresh Babu', 9123456788, 9, 9, 3, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567898', 1, 'Escalated to higher authority.'),
-(10, '2023-02-01', 'Lakshmanan Pillai', 9123456789, 10, 10, 2, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567899', 1, 'Under review by technical team.');
+(10, '2023-02-01', 'Lakshmanan Pillai', 9123456789, 10, 10, 2, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula orci at mauris.', '123456', '1234567899', 1, 'Under review by technical team.'),
+(16, '0000-00-00', '24234234', 432423, 2, 1, 1, 1, NULL, '434', '3424231', 2, NULL),
+(18, '0000-00-00', '24234234', 432423, 2, 1, 1, 1, NULL, '434', '3424232', 2, NULL),
+(21, '0000-00-00', '24234234', 432423, 2, 1, 1, 1, NULL, '434', '3424233', 2, NULL),
+(23, '0000-00-00', '', 24323423424, 2, 1, 1, 1, NULL, '434', '3424234', 2, NULL),
+(25, '0000-00-00', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424235', 2, NULL),
+(26, '0000-00-00', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424236', 2, NULL),
+(30, '0000-00-00', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424237', 2, NULL),
+(40, '0000-00-00', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424238', 2, NULL),
+(48, '0000-00-00', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424239', 2, NULL),
+(50, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424240', 2, NULL),
+(51, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424241', 2, NULL),
+(52, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424242', 2, NULL),
+(56, '2025-01-30', '24234234', 24323423424, 0, 0, 0, 1, NULL, '434', '3424243', 0, NULL),
+(59, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424244', 2, NULL),
+(74, '2025-01-30', '24234234', 24323423424, 2, 1, 1, 1, NULL, '434', '3424245', 2, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_master`
+--
+
+CREATE TABLE `user_master` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(250) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `is_verified` tinyint(1) DEFAULT NULL,
+  `access_token` varchar(255) DEFAULT NULL,
+  `reset_token` varchar(255) DEFAULT NULL,
+  `reset_token_expiry` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `role` enum('admin','create','viewer') DEFAULT 'admin'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -279,6 +382,12 @@ ALTER TABLE `mfi`
   ADD UNIQUE KEY `mfi_name` (`mfi_name`);
 
 --
+-- Indexes for table `order_history`
+--
+ALTER TABLE `order_history`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `states`
 --
 ALTER TABLE `states`
@@ -293,9 +402,9 @@ ALTER TABLE `status`
   ADD UNIQUE KEY `status_name` (`status_name`);
 
 --
--- Indexes for table `test-userdb`
+-- Indexes for table `test_userdb`
 --
-ALTER TABLE `test-userdb`
+ALTER TABLE `test_userdb`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `accountid` (`accountid`);
 
@@ -305,6 +414,14 @@ ALTER TABLE `test-userdb`
 ALTER TABLE `userdb`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `accountid` (`accountid`);
+
+--
+-- Indexes for table `user_master`
+--
+ALTER TABLE `user_master`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `access_token` (`access_token`);
 
 --
 -- Indexes for table `vendor`
@@ -330,6 +447,12 @@ ALTER TABLE `mfi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `order_history`
+--
+ALTER TABLE `order_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT for table `states`
 --
 ALTER TABLE `states`
@@ -342,16 +465,22 @@ ALTER TABLE `status`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `test-userdb`
+-- AUTO_INCREMENT for table `test_userdb`
 --
-ALTER TABLE `test-userdb`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+ALTER TABLE `test_userdb`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- AUTO_INCREMENT for table `userdb`
 --
 ALTER TABLE `userdb`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+
+--
+-- AUTO_INCREMENT for table `user_master`
+--
+ALTER TABLE `user_master`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `vendor`
