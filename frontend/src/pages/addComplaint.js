@@ -39,8 +39,9 @@ export default function Complaint(){
       alert(response.data.message);
       window.location.reload();
     } catch (error) {
-        console.error(error?.response?.data?.message)
-        alert(error?.response?.data?.message || "Unknown Error");
+        console.error('error post',error);
+        const x = error?.response?.data?.message;
+        alert(x);
     }
   };
    //Excel Import
@@ -88,6 +89,7 @@ export default function Complaint(){
         window.location.reload();
     } catch(error) {
         console.error("Error Details:", error);
+        const x = error?.response?.data?.message;
         if (error?.response?.data?.message === "Validation errors found") {
             let errorMessage = "Validation Errors:\n";
             error?.response?.data?.errors.forEach(err => {
@@ -102,7 +104,7 @@ export default function Complaint(){
                 errorMessage += `${err} \n`;
             })
             alert(errorMessage);
-            window.location.reload();
+            return false;
         }
         else if (error?.response?.data?.message === "Duplicate Account IDs in input file") {
             let duplicate_message = "Duplicate Account IDs \n";
@@ -112,6 +114,7 @@ export default function Complaint(){
             alert(duplicate_message);
         return false;
         }
+        alert(x);
     }
    }
 

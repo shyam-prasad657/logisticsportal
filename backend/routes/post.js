@@ -13,15 +13,39 @@ router.post('/submit', (req, res) => {
     if (!formData.name || !formData.phone || !formData.accountid || !formData.phone || !formData.accountid || !formData.date || !formData.clientid || !formData.mfi || !formData.branch || !formData.state || !formData.vendor) {
         return res.status(400).json({ error: 'Name and phone number are required.' });
     }
+    const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid = ?`;
+    db.query(checkQuery, [formData.accountid], (err, result) => {
+        if (err) {
+            console.error("Error checking Account IDs", err);
+            return res.status(500).json({ message : "Database error while checking account id"});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({
+                message : "Account ID already exists",
+                duplicate : formData.account
+            })
+        }
+
     const query = `INSERT INTO ${tableName} (customerName, customerPhone, accountid, complaintDate, clientid, mfi, branch, state, vendorName, issue) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?)`;
     db.query(query, [formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
-            return res.status(500).json({ error: 'Database error.' });
+            return res.status(500).json({ message: 'Database error.' });
         }
-        
-        res.status(200).json({ message: 'Data saved successfully!' });
-    });
+        if(result.affectedRows > 0) {
+            const historyQuery = 'INSERT INTO order_history (accountid, action, created_at) VALUES (?, ?, NOW())';
+            db.query(historyQuery, [formData.accountid, 'CREATE'], (historyError,  historyResult) => {
+                if(historyError) {
+                    console.log(historyError);
+                    return res.status(500).json({ message : 'Error while inserting history data'})
+                }
+                if(historyResult) {
+                    console.log('result', historyResult)
+                    return res.status(200).json({ message : 'Order Created and added in history successfully!'});
+                }
+            })
+        }
+    })})
 });
 
 //import(excel) - Add Complaint
@@ -152,7 +176,7 @@ router.post('/import-excel/add', async (req, res) => {
             return value;
         })
     )
-    console.log(values)
+    console.log('Values: ',values)
     const sql = `INSERT INTO ${tableName} (${Object.values(columnMapping).join(", ")}) VALUES ?`;
 
     db.query(sql, [values], (err, result) => {
@@ -160,7 +184,22 @@ router.post('/import-excel/add', async (req, res) => {
             console.error("Error inserting Data: ", err);
             return res.status(500).json({ message : "Database error"});
         }
-        res.json({ message: "Data imported Succesfully", inserted: result.affectedRows})
+        if(result.affectedRows > 0) {
+            const accountidHistory = users.map((e) => e["Account ID*"]);
+            const id = accountidHistory.map((e) => [e, 'IMPORT CREATE', new Date()])
+            console.log('id',id)
+            const historyQuery = 'INSERT INTO order_history (accountid, action, created_at) VALUES ?';
+            db.query(historyQuery, [id], (historyError, historyValues) => {
+                if(historyError) {
+                    console.log('history error',historyError);
+                    return res.status(500).json({ message : 'Error while inserting history data'})
+                }
+            if(historyValues) {
+                console.log('result', historyValues)
+                return res.status(200).json({ message: "Data imported and history updated Succesfully", inserted: result.affectedRows});
+            }
+            })
+        }
     })
 })
 })
