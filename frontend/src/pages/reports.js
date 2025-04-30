@@ -102,7 +102,17 @@ import Modal from '../components/selectModal';
         // Open export endpoint in a new window (or tab)
         const handleExport = (type) => {
             // You can use window.location or window.open
-            window.open(`http://localhost:8081/export?type=${type}&status=${filters.status || undefined}&state=${filters.state || undefined}&accountId=${filters.accountId || undefined}&clientId=${filters.clientId || undefined}&phoneNumber=${filters.phoneNumber || undefined}`, '_blank', '_blank');
+            const params = new URLSearchParams();
+
+        params.append("type", type);
+        if (filters.status && filters.status !== "0") params.append("status", filters.status);
+        if (filters.state && filters.state !== "0") params.append("state", filters.state);
+        if (filters.clientId) params.append("clientId", filters.clientId);
+        if (filters.accountId) params.append("accountId", filters.accountId);
+        if (filters.phoneNumber) params.append("phoneNumber", filters.phoneNumber);
+        if (filters.from) params.append("from", filters.from);
+        if (filters.to) params.append("to", filters.to);
+        window.open(`http://localhost:8081/export?${params.toString()}`, '_blank');
         }
         //Delete
         const [selectedItem, setSelectedItem] = useState(null);
@@ -134,8 +144,8 @@ import Modal from '../components/selectModal';
                     <div className='reports-header mb-3'>
                     <h3>Reports</h3>
                     <button onClick={() => handleExport('excel')} className="btn btn-success">Export to Excel</button>
-                    <button onClick={() => handleExport('csv')} className="btn btn-secondary">Export to CSV</button>
-                    <button onClick={() => handleExport('pdf')} className="btn btn-danger">Export to PDF</button>
+                    {/* <button onClick={() => handleExport('csv')} className="btn btn-secondary">Export to CSV</button> */}
+                    {/* <button onClick={() => handleExport('pdf')} className="btn btn-danger">Export to PDF</button> */}
                     </div>
                     <div className='row mb-4'>
                         <div className='filter-group col-md-4 mb-4'>

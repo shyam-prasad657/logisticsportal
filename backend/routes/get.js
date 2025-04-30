@@ -110,7 +110,33 @@ router.get('/export', (req, res) => {
     const {conditions, valueParams} = buildFilterConditions(req.query);
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : '';
 
-    const exportQuery = `SELECT *,DATE_FORMAT(complaintDate, '%d/%m/%Y') AS frontend_date FROM ${tableName} ${whereClause}`;
+    const exportQuery = `
+    SELECT 
+    DATE_FORMAT(complaintDate, '%d/%m/%Y') AS Date,
+    customerName AS Name,
+    clientid AS 'client id',
+    accountid AS 'account id',
+    customerPhone AS Phone,
+    s.status_name AS status,
+    m.mfi_name AS mfi,
+    b.branch_name AS branch,
+    st.state_name AS state,
+    issue,
+    v.vendor_name AS vendor,
+    remarks 
+    FROM 
+        test_userdb 
+    JOIN 
+        status s ON test_userdb.status = s.id
+    JOIN 
+        states st ON test_userdb.state = st.id
+    JOIN 
+        vendor v ON test_userdb.vendorName = v.id
+    JOIN 
+        mfi m ON test_userdb.mfi = m.id
+    JOIN 
+        branch b ON test_userdb.branch = b.id
+    ${whereClause}`;
     db.query(exportQuery, valueParams, async(err, results) => {
         if(err){
             console.error(err);
