@@ -185,23 +185,44 @@ router.get('/export', (req, res) => {
           }
     })
 })
+
+//Used under update.js
 router.get('/getValue', (req, res) => {
     const id = req.query.id;
     // console.log(id)
     const query = `SELECT * from ${tableName} where accountid = ?`
         db.query(query, [id], (err, result) => {
+            if(err) {
+                return res.status(500).json({error : err.message, message : 'no such data found'})
+            }
             if (result.length > 0) {
                 return res.status(200).json({data : result})
             }
             if(result.length === 0) {
                 return res.status(500).json({message : 'No such data found'})
             }
-            if(err) {
-                return res.status(500).json({error : err.message, message : 'no such data found'})
-            }
             console.log(result)
         });
         
+})
+
+//Under report.js to fetch order wise history
+router.get('/reports/history' ,(req, res) => {
+    const id = req.query.id;
+    console.log('ID : ',id);
+    const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,action,remarks,status from order_history WHERE accountid = ?`;
+    db.query(query, [id], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Database Error while fetching history'})
+        }
+        if(result.length > 0) {
+            console.log(result)
+            return res.status(200).json({list : result});
+        }
+        if(result.length === 0) {
+            return res.status(200).json({message : 'No History So far'})
+        }
+    });
 })
 
 // Export functions to be used in `post.js`

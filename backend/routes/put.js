@@ -21,13 +21,13 @@ const tableName = '`test_userdb`';
             if(result.affectedRows > 0) {
                 const historyQuery = "INSERT INTO order_history (accountid, action, remarks, status, created_at) VALUES (?, ?, ?, ?, NOW())"
                 db.query(historyQuery, [accountId, 'UPDATE', remarks, updatedStatus], (historyError, historyResult) => {
-                    if(historyResult) {
-                        console.log('history result',historyResult)
-                        return res.status(200).json({ message : 'Status snd history updated successfully!'});
-                    }
                     if(historyError) {
                         console.log('history error',historyError);
                         return res.status(500).json({ message : 'Error while inserting history data'})
+                    }
+                    if(historyResult) {
+                        console.log('history result',historyResult)
+                        return res.status(200).json({ message : 'Status snd history updated successfully!'});
                     }
                 })
             }
@@ -124,13 +124,13 @@ router.put('/import-excel/update', async (req, res) => {
             if(result.affectedRows > 0) {
                 const historyQuery = "INSERT INTO order_history (accountid, status, remarks, action, created_at) VALUES ?"
                 db.query(historyQuery, [historyValues], async(historyError, historyResult) => {
-                    if(historyResult) {
-                        console.log('history result',historyResult)
-                        return res.status(200).json({ message : 'Status snd history Imported successfully!'});
-                    }
                     if(historyError) {
                         console.log(historyError);
                         return res.status(500).json({ message : 'Error while inserting history data'})
+                    }
+                    if(historyResult) {
+                        console.log('history result',historyResult)
+                        return res.status(200).json({ message : 'Status snd history Imported successfully!'});
                     }
                 })
             }

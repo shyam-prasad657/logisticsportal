@@ -1,15 +1,16 @@
-    import { complaints, status, state } from '../mockData/mockData';
-    import './reports.css';
-    import { MdDelete } from "react-icons/md";
-    import React, { useEffect, useState } from 'react';
-    import ReactPaginate from 'react-paginate';
+import { complaints, status, state } from '../mockData/mockData';
+import './reports.css';
+import { MdDelete } from "react-icons/md";
+import React, { useEffect, useState } from 'react';
+import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { findMaster, useData } from '../components/fetchdata';
 import DeleteModal from '../components/modal';
 import Modal from '../components/selectModal';
+import useSWR, { mutate } from 'swr';
 
     export default function Reports(){
-        const [data, setData] = useState([]);
+        const [getData, setGetData] = useState([]);
         const { statusData, branchData, mfiData, vendorData,stateData } = useData();
         const [pageCount, setPageCount] = useState(0);
         const [currentPage, setCurrentPage] = useState(); // zero-indexed
@@ -40,7 +41,7 @@ import Modal from '../components/selectModal';
                             to : filters.to || undefined
                         }
                     });
-                    setData(response.data.data);
+                    setGetData(response.data.data);
                     setPageCount(response.data.totalPages)
                 }
                 catch(error) {
@@ -135,8 +136,15 @@ import Modal from '../components/selectModal';
 
         //Select Item
         const [selectItem, setSelectItem] = useState();
+        const fetcher = (url) => fetch(url).then((res) => res.json());
+        const { data, error } = useSWR(selectItem ? `http://localhost:8081/reports/history?id=${selectItem?.accountid}` : null, fetcher);
         const handleSelect = (id) => {
-            setSelectItem(id)
+            setSelectItem(id);
+            // mutate(`http://localhost:8081/reports/history?id=${id?.accountid}`);
+            if(error) {
+                console.error('Get Error',error);
+            }
+            console.log('get Data',data?.list)
         }
         return(
             <div className= "container-fluid" id = "reports-page">
@@ -212,7 +220,7 @@ import Modal from '../components/selectModal';
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item, index) => (
+                            {getData.map((item, index) => (
                             <tr key = {index}>
                             <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDeleteClick(item)}/></td>
                             <td>{item.frontend_date}</td>
@@ -254,7 +262,7 @@ import Modal from '../components/selectModal';
                         {/* Delete Modal */}
                         <DeleteModal param = {selectedItem} delete_event = {confirmDelete} mfiData = {mfiData} statusData={statusData}/>
                         {/* Modal */}
-                        <Modal param = {selectItem} />
+                        <Modal param = {selectItem} history = {data?.list} />
                     </div>
                 </div>
         )

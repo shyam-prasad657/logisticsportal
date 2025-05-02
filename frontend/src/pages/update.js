@@ -41,7 +41,10 @@ function Update() {
     const handleFind = (e) => {
         console.log(e.target.value);
         setAccountiD(e.target.value);
-        mutate(`http://localhost:8081/getValue?id=${accountId}`);
+        // mutate(`http://localhost:8081/getValue?id=${accountId}`);
+        if(error) {
+            console.error('Get Error in Update Screen',error)
+        }
     }
     console.log(error);
 
