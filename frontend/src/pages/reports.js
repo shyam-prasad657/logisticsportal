@@ -127,7 +127,7 @@ import useSWR, { mutate } from 'swr';
                 const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.id}`)
                 alert(response.data.message)
                 console.log(selectedItem.id)
-                window.location.reload();
+                fetchData(currentPage + 1);
             }
             catch(error) {
                 console.error('An unexpected error occured.', error);

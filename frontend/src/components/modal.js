@@ -18,7 +18,7 @@ function DeleteModal({param, delete_event, mfiData, statusData}) {
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" className="btn btn-danger" onClick={delete_event}>Delete</button>
+                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={delete_event}>Delete</button>
                 </div>
                 </div>
             </div>

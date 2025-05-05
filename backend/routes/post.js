@@ -11,7 +11,7 @@ router.post('/submit', (req, res) => {
     const {formData} = req.body
     
     if (!formData.name || !formData.phone || !formData.accountid || !formData.phone || !formData.accountid || !formData.date || !formData.clientid || !formData.mfi || !formData.branch || !formData.state || !formData.vendor) {
-        return res.status(400).json({ error: 'Name and phone number are required.' });
+        return res.status(400).json({ message: 'Name and phone number are required.' });
     }
     const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid = ?`;
     db.query(checkQuery, [formData.accountid], (err, result) => {
