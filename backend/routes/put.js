@@ -9,7 +9,7 @@ const tableName = '`test_userdb`';
   router.put('/update-status', async (req, res) => {
     const  { accountId, remarks, updatedStatus} = req.body;
     console.log('Request Body:', req.body);
-    if(!accountId, !updatedStatus) {
+    if(!accountId || !updatedStatus) {
         return res.status(400).json({ message: 'Account ID and Status are required'});
     }
         const query = `UPDATE ${tableName} SET status = ? , remarks = ? WHERE accountid = ?`;

@@ -257,6 +257,8 @@ import useSWR, { mutate } from 'swr';
                             nextClassName = 'page-item'
                             nextLinkClassName = 'page-link'
                             pageClassName = 'page-item'
+                            breakClassName='page-item'
+                            breakLinkClassName='page-link'
                             pageLinkClassName = 'page-link'
                             />
                         {/* Delete Modal */}
