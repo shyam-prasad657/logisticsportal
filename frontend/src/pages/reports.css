@@ -54,6 +54,9 @@
 .status-replacement-done{
     background-color: #7B68EE;
 }
+.status-dc-uploaded{
+    background-color: #ff5733;
+}
 
 .table-container {
     overflow-x: auto;

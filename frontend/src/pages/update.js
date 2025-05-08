@@ -176,7 +176,7 @@ function Update() {
                             </select>
                             <div className="d-flex justify-content-end mt-4">
                             <button type="submit" className="btn btn-primary" 
-                                disabled = {!data?.data || error}>
+                                disabled = {!data?.data || error || !updatedStatus}>
                                 Update Status</button>
                             </div>
                         </div>

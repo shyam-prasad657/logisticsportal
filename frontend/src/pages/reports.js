@@ -93,10 +93,12 @@ import useSWR, { mutate } from 'swr';
                     return 'status-resolution-pending';
                 case 'Resolved':
                     return 'status-resolved';
-                    case 'Replacement Raised':
-                        return 'status-replacement-raised';
-                        case 'Replacement Done':
-                            return 'status-replacement-done';
+                case 'Replacement Raised':
+                    return 'status-replacement-raised';
+                case 'Replacement Done':
+                    return 'status-replacement-done';
+                case 'DC Uploaded':
+                    return 'status-dc-uploaded';
                 return '';
             };
         }
@@ -217,6 +219,7 @@ import useSWR, { mutate } from 'swr';
                             <th scope="col">Remarks</th>
                             <th scope="col">Customer Phone Number</th>
                             <th scope="col">Vendor</th>
+                            <th scope="col">Delivery Challan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -226,7 +229,7 @@ import useSWR, { mutate } from 'swr';
                             <td>{item.frontend_date}</td>
                             {/* <td scope="row">{item.id}</td> */}
                             <td>{item.clientid}</td>
-                            <td><a data-bs-toggle="modal" data-bs-target="#order-detail" onClick = {() => handleSelect(item)}>{item.accountid}</a></td>
+                            <td><a className = 'link-primary cursor-pointer' data-bs-toggle="modal" data-bs-target="#order-detail" onClick = {() => handleSelect(item)}>{item.accountid}</a></td>
                             <td>{item.customerName}</td>
                             <td>{findMaster(item.branch, branchData, 'branch')}</td>
                             <td>{findMaster(item.state, stateData, 'state')}</td>
@@ -236,6 +239,14 @@ import useSWR, { mutate } from 'swr';
                             <td>{item.remarks}</td>
                             <td>{item.customerPhone}</td>
                             <td>{findMaster(item.vendorName, vendorData, 'vendor')}</td>
+                            <td>
+                            <a
+                                href={`http://localhost:8081/${item.dc_path}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className='link-primary'
+                                >DC file</a>
+                            </td>
                             </tr>
                             ))}
                         </tbody>
