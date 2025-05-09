@@ -210,13 +210,13 @@ router.get('/getValue', (req, res) => {
 router.get('/reports/history' ,(req, res) => {
     const id = req.query.id;
     console.log('ID : ',id);
-    const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,action,remarks,status from order_history WHERE accountid = ?`;
+    const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,action,remarks,status from order_history WHERE accountid = ? ORDER BY id DESC`;
     db.query(query, [id], (err, result) => {
         if(err) {
             return res.status(500).json({message : 'Database Error while fetching history'})
         }
         if(result.length > 0) {
-            const podQuery =   `SELECT * from pod_files WHERE accountid = ?`;
+            const podQuery =   `SELECT *,DATE_FORMAT(delivery_date, '%d/%m/%Y %H:%i:%s') as delivery_date from pod_files WHERE accountid = ?`;
             db.query(podQuery, [id], (PODerr, PODResult) => {
                 if(PODerr) {
                     return res.status(500).json({message : 'Database Error while fetching POD'})

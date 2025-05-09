@@ -8,7 +8,7 @@ import axios from 'axios';
 export default function PODUpload() {
     const [accountId, setAccountiD] = useState('');
     const [remarks, setRemarks] = useState('');
-    const [deliverydate, setDeliverydate] = useState(null);
+    const [deliverydate, setDeliverydate] = useState('');
 
     const [ pod1, setPod1 ] = useState(null);
     const [ pod2, setPod2 ] = useState(null);

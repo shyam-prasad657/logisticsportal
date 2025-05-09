@@ -22,21 +22,22 @@ export default function Modal ({ param,pod, history }) {
                     <hr />
                     {pod?.pod_1 || pod?.pod_2 || pod?.pod_3 ? (
                         <>
-                        <h6 className="mb-2">Delivery Data</h6>
-                        <div className="row">
-                            <img className="col-md-4"
+                        <b className="mb-2">Delivery Data</b>
+                        <p>Delivery Date - {pod?.delivery_date}</p>
+                        <div className="row justify-content-around">
+                            <img className="col-md-2"
                             src = {`http://localhost:8081/${pod?.pod_1}`}
                             height= '100'
                             width = '100'
                             onClick={() => {window.open(`http://localhost:8081/${pod?.pod_1}`, '_blank')}}
                             ></img>
-                            <img className="col-md-4"
+                            <img className="col-md-2"
                             src = {`http://localhost:8081/${pod?.pod_2}`}
                             height= '100'
                             width = '100'
                             onClick={() => {window.open(`http://localhost:8081/${pod?.pod_2}`, '_blank')}}
                             ></img>
-                            <img className="col-md-4"
+                            <img className="col-md-2"
                             src = {`http://localhost:8081/${pod?.pod_3}`}
                             height= '100'
                             width = '100'
