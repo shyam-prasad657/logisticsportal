@@ -216,11 +216,13 @@ router.get('/reports/history' ,(req, res) => {
             return res.status(500).json({message : 'Database Error while fetching history'})
         }
         if(result.length > 0) {
-            console.log(result)
-            return res.status(200).json({list : result});
-        }
-        if(result.length === 0) {
-            return res.status(200).json({message : 'No History So far'})
+            const podQuery =   `SELECT * from pod_files WHERE accountid = ?`;
+            db.query(podQuery, [id], (PODerr, PODResult) => {
+                if(PODerr) {
+                    return res.status(500).json({message : 'Database Error while fetching POD'})
+                }
+                return res.status(200).json({list : result, pod : PODResult[0]})
+            })
         }
     });
 })

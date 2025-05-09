@@ -147,6 +147,7 @@ import useSWR, { mutate } from 'swr';
                 console.error('Get Error',error);
             }
             console.log('get Data',data?.list)
+            console.log('get POD Data',data?.pod)
         }
         return(
             <div className= "container-fluid" id = "reports-page">
@@ -275,7 +276,7 @@ import useSWR, { mutate } from 'swr';
                         {/* Delete Modal */}
                         <DeleteModal param = {selectedItem} delete_event = {confirmDelete} mfiData = {mfiData} statusData={statusData}/>
                         {/* Modal */}
-                        <Modal param = {selectItem} history = {data?.list} />
+                        <Modal param = {selectItem} history = {data?.list} pod = {data?.pod} />
                     </div>
                 </div>
         )

@@ -24,10 +24,11 @@ export default function Upload() {
         if (!file) return alert("Please choose a file");
 
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("accountId", accountId)
+        formData.append("dcfile", file);
         console.log(formData)
         try {
-            const response = await axios.put(`http://localhost:8081/upload/${accountId}`,formData);
+            const response = await axios.put(`http://localhost:8081/upload`,formData);
             const success = response?.data?.message
             alert(success)
             setAccountiD('');
