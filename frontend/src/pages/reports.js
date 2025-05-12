@@ -126,13 +126,15 @@ import useSWR, { mutate } from 'swr';
 
         const confirmDelete = async () => {
             try {
-                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.id}`)
+                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.accountid}`)
                 alert(response.data.message)
-                console.log(selectedItem.id)
+                console.log(selectedItem.accountid)
                 fetchData(currentPage + 1);
             }
             catch(error) {
                 console.error('An unexpected error occured.', error);
+                const x = error?.response?.data?.message;
+                alert(x);
             }
         }
 
@@ -224,7 +226,7 @@ import useSWR, { mutate } from 'swr';
                             </tr>
                         </thead>
                         <tbody>
-                            {getData.map((item, index) => (
+                            {getData.length > 0 ? (getData.map((item, index) => (
                             <tr key = {index}>
                             <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDeleteClick(item)}/></td>
                             <td>{item.frontend_date}</td>
@@ -249,7 +251,7 @@ import useSWR, { mutate } from 'swr';
                                 >DC file</a>
                             </td>
                             </tr>
-                            ))}
+                            ))) : (<tr><td colSpan={14} className='text-center'>No data found</td></tr>)}
                         </tbody>
                         </table>
                         </div>
