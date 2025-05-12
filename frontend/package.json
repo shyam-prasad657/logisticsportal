@@ -1,5 +1,5 @@
 {
-  "homepage": "http://shyam-prasad657.github.io/logisticsportal",
+  "homepage": ".",
   "name": "logisticsportal",
   "version": "0.1.0",
   "private": true,
@@ -42,9 +42,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -65,8 +63,7 @@
     ]
   },
   "devDependencies": {
-    "datatables.net-dt": "^2.1.2",
-    "gh-pages": "^6.1.1"
+    "datatables.net-dt": "^2.1.2"
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
