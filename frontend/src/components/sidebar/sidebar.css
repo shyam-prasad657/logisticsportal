@@ -26,11 +26,16 @@ a, h5{
     /* position: fixed;
     top :0px; */
     /* left : -170px; */
-    transition: 850ms ease-in-out;
+    /* transition: 850ms ease-in-out; */
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
 }
 .option-name{
     padding-left: 12px;
     font-weight: 600;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 .side-menu.close{
     /* width: 80px; */
@@ -58,6 +63,7 @@ a, h5{
     font-size:x-large;
     cursor: pointer;
     margin-right: 20px;
+    transition: margin 0.3s ease-in-out;
 }
 .sidebar-item{
     width: 100%;

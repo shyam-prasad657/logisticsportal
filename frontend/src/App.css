@@ -16,7 +16,9 @@
 
 .App.grow{
     width : 94vw;
+    transition: width 0.3s ease-in-out;
 }
 .App.shrink{
     width: 82vw;
+    transition: width 0.3s ease-in-out;
 }
