@@ -1,14 +1,27 @@
 import './home.css';
 import { useData } from '../components/fetchdata';
+import { MyResponsivePie } from '../components/piechart';
 
 export default function Home(){
-    const { data } = useData();
+    const { data, mfiData } = useData();
+    console.log(data)
     const totalCount = data?.length;
     const replacementIssuedCount = data?.filter(item => item.status === 4).length;
     const replacementDoneCount = data?.filter(item => item.status === 5).length;
     const closedCount = data?.filter(item => item.status === 3).length;
     const pendingCount = data?.filter(item => item.status === 1 ).length;
     const resolutionPendingCount = data?.filter(item => item.status === 2 ).length;
+    let newArray = [];
+    mfiData?.forEach((e) => {
+        const count = data?.filter((item) => item?.mfi === e.id).length;
+        newArray.push({
+            "id": e.mfi_name,
+            "label": e.mfi_name,
+            "value": count,
+        })
+    });
+    console.log('newArray', newArray)
+
 
     return(
         <div className='container-fluid' id = "home-page">
@@ -30,6 +43,9 @@ export default function Home(){
                 <p className='box-name'>Replacements Issued</p>
                 <div className='box-value'>{replacementIssuedCount + replacementDoneCount}</div>
             </div>
+        </div>
+        <div className='container home' id = 'charts'>    
+            <MyResponsivePie data = {newArray} />
         </div>
         </div>
     )
