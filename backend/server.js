@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require("dotenv").config(); // Load secret key from .env
 const { getRoutes } = require('./routes/get');
 const { postRoutes } = require('./routes/post');
 const { putRoutes } = require('./routes/put');
@@ -30,6 +31,6 @@ app.get('/', (req, res)=> {
 
 
 
-app.listen(8081, ()=> {
+app.listen(process.env.DB_PORT, ()=> {
     console.log("listening...");
 })
