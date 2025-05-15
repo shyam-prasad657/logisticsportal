@@ -13,6 +13,7 @@ const Complaint = lazy(() => import("./pages/addComplaint"));
 const Update = lazy(() => import("./pages/update"));
 const Upload = lazy(() => import("./pages/upload"));
 const PODUpload = lazy(() => import("./pages/podUpload"));
+const Mfi = lazy(() => import('./pages/master/mfi'));
 
 function App() {
   const [sidepanel, setSidepanel] = useState(false);
@@ -32,6 +33,7 @@ function App() {
       <Suspense fallback = {<Loading />}>
       <Routes>
         <Route path = "/complaint-portal" element={<Home />} />
+        <Route path = "/master/mfi" element={<Mfi />} />
         <Route path = "/reports" element={<Reports />} />
         <Route path = "/add" element={<Complaint />} />
         <Route path = "/update" element={<Update />} />

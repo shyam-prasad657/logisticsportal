@@ -14,7 +14,7 @@ export default function SidebarComponent({toggle}) {
             <div className = 'sidebar-container'>
             <Menu>
             <SubMenu label="Masters" icon = {<FaDatabase className='icon' />}>
-            <MenuItem > Pie charts </MenuItem>
+            <Link to = '/master/mfi'><MenuItem > MFI </MenuItem></Link>
             <MenuItem> Line charts </MenuItem>
             </SubMenu>
                 <Link to = "/complaint-portal">

@@ -10,7 +10,7 @@ const tableName = '`test_userdb`';
 // Function to fetch data from the database
 const fetchData = (tableName) => {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT * FROM ${tableName}`;
+        const sql = `SELECT * FROM ${tableName} ORDER BY id DESC`;
         db.query(sql, (err, data) => {
             if (err) reject(err);
             else resolve(data);

@@ -7,7 +7,7 @@
 #container-box{
     display: flex;
     width: 100vw !important;
-    max-height: 88vh;
+    height: 88vh;
     padding : 0 !important;
 }
 
