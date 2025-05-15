@@ -10,7 +10,7 @@ h3{
 #add-complaint-page{
     height: 88vh;
     background-color: #ecf0f5;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .add-complaint{
     background-color: white;

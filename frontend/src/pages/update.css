@@ -6,7 +6,7 @@
 #update-page{
     height: 88vh;
     background-color: #ecf0f5;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .update{
     background-color: white;

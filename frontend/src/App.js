@@ -5,6 +5,7 @@ import Navbar from './components/sidebar/navbar';
 import { lazy, Suspense, useState } from 'react';
 // import DataTable from './pages/datatable';
 import Loading from './components/loading';
+import SidebarComponent from './components/sidebar/react-sidebar';
 
 const Reports = lazy(() => import("./pages/reports"));
 const Home = lazy(() => import("./pages/home"));
@@ -24,8 +25,10 @@ function App() {
     <BrowserRouter>
     <Navbar showSidebar = {showSidebar}/>
       <div className = "container-fluid" id = "container-box">
-      <Sidebar sidepanel={sidepanel}/>
-      <div className = {sidepanel ? 'App shrink' : 'App grow'}>
+      {/* <Sidebar sidepanel={sidepanel}/> */}
+      <SidebarComponent toggle={sidepanel} />
+      {/* <div className = {sidepanel ? 'App shrink' : 'App grow'}> */}
+      <div className='App'>
       <Suspense fallback = {<Loading />}>
       <Routes>
         <Route path = "/complaint-portal" element={<Home />} />

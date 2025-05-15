@@ -6,26 +6,29 @@
 #home-page{
     height: 88vh;
     background-color: #ecf0f5;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .home{
     /* display: flex; */
     /* row-gap: 10px; */
     /* flex-wrap: wrap; */
     background-color: white;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    margin : 20px 0px 0px 0px;
     padding : 20px 10px;
-    display: grid;
+    /* display: grid;
     grid-template-columns: auto auto auto auto;
     row-gap: 10px;
-    column-gap: 10px;
+    column-gap: 10px; */
 }
 #charts {
     flex: 1;
-    min-height: 400px;
+    height: 400px; /* Add explicit height */
+    width: 100%;   /* Optional but helps in flex/grid layouts */
+    position: relative;
 }
 
-@media only screen and (max-width: 1200px) {
+/* @media only screen and (max-width: 1200px) {
     .home{
         grid-template-columns: auto auto auto;
     }
@@ -39,7 +42,7 @@
     .home{
         grid-template-columns: auto;
     }
-  }
+  } */
 
 .box{
     border: 1px solid black;

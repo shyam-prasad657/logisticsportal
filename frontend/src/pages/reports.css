@@ -7,13 +7,12 @@
 #reports-page{
     height: 88vh;
     background-color: #ecf0f5;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .reports {
     background-color: white;
     margin-top: 20px;
     padding : 20px 10px;
-    overflow-y: scroll;
 }
 
 .reports-header{
