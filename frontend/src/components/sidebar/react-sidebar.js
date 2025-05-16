@@ -15,7 +15,10 @@ export default function SidebarComponent({toggle}) {
             <Menu>
             <SubMenu label="Masters" icon = {<FaDatabase className='icon' />}>
             <Link to = '/master/mfi'><MenuItem > MFI </MenuItem></Link>
-            <MenuItem> Line charts </MenuItem>
+            <Link to = '/master/status'><MenuItem > Status </MenuItem></Link>
+            <Link to = '/master/vendor'><MenuItem > Vendor </MenuItem></Link>
+            <Link to = '/master/branch'><MenuItem > Branch </MenuItem></Link>
+            <Link to = '/master/state'><MenuItem > State </MenuItem></Link>
             </SubMenu>
                 <Link to = "/complaint-portal">
                 <MenuItem icon = {<IoIosHome className='icon' />}>

@@ -4,13 +4,13 @@
     font-family: "Noto Sans", sans-serif;
 }
 
-#mfi-page{
+#master-page{
     height: 88vh;
     background-color: #ecf0f5;
     overflow-y: auto;
 }
 
-.mfi{
+.master{
     background-color: white;
     margin-top: 20px;
     padding : 20px 10px;
