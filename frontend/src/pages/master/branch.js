@@ -16,6 +16,7 @@ export default function Branch() {
                     <th scope="col">Action</th>
                     <th scope="col">ID</th>
                     <th scope="col">Branch</th>
+                    <th scope="col">State</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +25,7 @@ export default function Branch() {
                     <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal"/></td>
                     <td scope="row">{item?.id}</td>
                     <td>{item?.branch_name}</td>
+                    <td>{item?.state}</td>
                     </tr>
                     ))) : (<tr><td colSpan={14} className='text-center'>No data found</td></tr>)}
                 </tbody>

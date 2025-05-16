@@ -4,14 +4,14 @@ import { MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
-import { findMaster, useData } from '../components/fetchdata';
+import { useData } from '../components/fetchdata';
 import DeleteModal from '../components/modal';
 import Modal from '../components/selectModal';
 import useSWR, { mutate } from 'swr';
 
     export default function Reports(){
         const [getData, setGetData] = useState([]);
-        const { statusData, branchData, mfiData, vendorData,stateData } = useData();
+        const { statusData, mfiData, stateData } = useData();
         const [pageCount, setPageCount] = useState(0);
         const [currentPage, setCurrentPage] = useState(); // zero-indexed
         const [reset, setReset] = useState(false)
@@ -234,14 +234,14 @@ import useSWR, { mutate } from 'swr';
                             <td>{item.clientid}</td>
                             <td><a className = 'link-primary cursor-pointer' data-bs-toggle="modal" data-bs-target="#order-detail" onClick = {() => handleSelect(item)}>{item.accountid}</a></td>
                             <td>{item.customerName}</td>
-                            <td>{findMaster(item.branch, branchData, 'branch')}</td>
-                            <td>{findMaster(item.state, stateData, 'state')}</td>
-                            <td>{findMaster(item.mfi, mfiData, 'mfi')}</td>
-                            <td><div className="d-flex justify-content-center"><span className={`status-label ${getStatusClass(findMaster(item.status, statusData, 'status'))} col-md-6`}>{findMaster(item.status, statusData, 'status')}</span></div></td>
+                            <td>{item.branch}</td>
+                            <td>{item.state}</td>
+                            <td>{item.mfi}</td>
+                            <td><div className="d-flex justify-content-center"><span className={`status-label ${getStatusClass(item.status)} col-md-6`}>{item.status}</span></div></td>
                             <td>{item.issue}</td>
                             <td>{item.remarks}</td>
                             <td>{item.customerPhone}</td>
-                            <td>{findMaster(item.vendorName, vendorData, 'vendor')}</td>
+                            <td>{item.vendor}</td>
                             <td>
                             <a
                                 href={`http://localhost:8081/${item.dc_path}`}

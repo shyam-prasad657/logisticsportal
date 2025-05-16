@@ -10,7 +10,19 @@ const tableName = '`test_userdb`';
 // Function to fetch data from the database
 const fetchData = (tableName) => {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT * FROM ${tableName} ORDER BY id DESC`;
+        let sql = '';
+        if(tableName === 'branch') {
+            sql = `
+                SELECT 
+                    branch.id, 
+                    branch.branch_name, 
+                    st.state_name AS state 
+                FROM branch
+                JOIN states st ON branch.state_id = st.id
+            `;
+        } else {
+        sql = `SELECT * FROM ${tableName} ORDER BY id DESC`;
+        }
         db.query(sql, (err, data) => {
             if (err) reject(err);
             else resolve(data);
@@ -88,7 +100,35 @@ router.get('/users', (req, res, next) => {
         if (err) return next(err);
 
         //Get total record count to compute total pages
-        const dataQuery = `SELECT *,DATE_FORMAT(complaintDate, '%d/%m/%Y') AS frontend_date from ${tableName} ${whereClause} LIMIT ? OFFSET ?`;
+        const dataQuery = `
+        SELECT 
+            DATE_FORMAT(complaintDate, '%d/%m/%Y') AS frontend_date,
+            customerName,
+            clientid,
+            accountid,
+            customerPhone,
+            s.status_name AS status,
+            m.mfi_name AS mfi,
+            b.branch_name AS branch,
+            st.state_name AS state,
+            issue,
+            v.vendor_name AS vendor,
+            remarks,
+            dc_path
+            FROM 
+                ${tableName} 
+            JOIN 
+                status s ON test_userdb.status = s.id
+            JOIN 
+                states st ON test_userdb.state = st.id
+            JOIN 
+                vendor v ON test_userdb.vendorName = v.id
+            JOIN 
+                mfi m ON test_userdb.mfi = m.id
+            JOIN 
+                branch b ON test_userdb.branch = b.id
+            ${whereClause} 
+        LIMIT ? OFFSET ?`;
         db.query(dataQuery,[...valueParams, limit,offset], (err, results) => {
             if (err) return next(err);
             console.log(countResult)
@@ -190,7 +230,28 @@ router.get('/export', (req, res) => {
 router.get('/getValue', (req, res) => {
     const id = req.query.id;
     // console.log(id)
-    const query = `SELECT * from ${tableName} where accountid = ?`
+    const query = `SELECT
+        customerName,
+        clientid,
+        customerPhone,
+        s.status_name AS status,
+        m.mfi_name AS mfi,
+        b.branch_name AS branch,
+        st.state_name AS state,
+        issue
+        FROM 
+            test_userdb 
+        JOIN 
+            status s ON test_userdb.status = s.id
+        JOIN 
+            states st ON test_userdb.state = st.id
+        JOIN 
+            vendor v ON test_userdb.vendorName = v.id
+        JOIN 
+            mfi m ON test_userdb.mfi = m.id
+        JOIN 
+            branch b ON test_userdb.branch = b.id
+        WHERE accountid = ?`;
         db.query(query, [id], (err, result) => {
             if(err) {
                 return res.status(500).json({error : err.message, message : 'no such data found'})

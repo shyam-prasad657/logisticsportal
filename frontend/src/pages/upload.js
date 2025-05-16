@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { complaints } from '../mockData/mockData';
 import './upload.css';
-import { findMaster, useData } from '../components/fetchdata';
 import useSWR from 'swr';
 import axios from 'axios';
 
 export default function Upload() {
     const [accountId, setAccountiD] = useState('');
-    const { statusData, stateData, branchData } = useData();
     const [file, setFile] = useState(null);
     const fetcher = (url) => fetch(url).then((res) => res.json());
     const {data, error } = useSWR(accountId ? `http://localhost:8081/getValue?id=${accountId}` : null, fetcher)
@@ -55,11 +53,13 @@ export default function Upload() {
                             {data?.data?.map((item,index) => (
                                 <div key={index} className='p-2'>
                                     <div><strong>Customer Name: </strong><i>{item?.customerName}</i></div>
+                                    <div><strong>Client ID : </strong><i>{item?.clientid}</i></div>
                                     <div><strong>Phone Number : </strong><i>{item?.customerPhone}</i></div>
                                     <div><strong>Issue : </strong><i>{item?.issue}</i></div>
-                                    <div><strong>Current Status : </strong><i>{findMaster(item?.status, statusData, 'status')}</i></div>
-                                    <div><strong>Branch : </strong><i>{findMaster(item?.branch, branchData, 'branch')}</i></div>
-                                    <div><strong>State : </strong><i>{findMaster(item?.state, stateData, 'state')}</i></div>
+                                    <div><strong>Current Status : </strong><i>{item?.status}</i></div>
+                                    <div><strong>Branch : </strong><i>{item?.branch}</i></div>
+                                    <div><strong>State : </strong><i>{item?.state}</i></div>
+                                    <div><strong>MFI : </strong><i>{item?.mfi}</i></div>
                                 </div>
                             ))}
                         </div>

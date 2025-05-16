@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import './update.css';
 import axios from 'axios';
 import * as XLSX from "xlsx";
-import { findMaster, useData } from '../components/fetchdata';
+import { useData } from '../components/fetchdata';
 import useSWR, { mutate } from 'swr';
 
 function Update() {
     const [accountId, setAccountiD] = useState('');
     const [updatedStatus, setUpdatedstatus] = useState();
     const [remarks, setRemarks] = useState();
-    
+
     //put()
-    const { statusData, stateData, branchData } = useData();
-    // console.log(data.remarks)
+    const { statusData } = useData();
     const handleDownloadTemplate = () => {
         const link = document.createElement('a');
         link.href = `${process.env.PUBLIC_URL}/update-status.xlsx`; // Path to the template file in the public folder
@@ -46,6 +45,7 @@ function Update() {
             console.error('Get Error in Update Screen',error)
         }
     }
+    console.log('data: ',data)
     console.log(error);
 
     //Export File
@@ -154,11 +154,13 @@ function Update() {
                             {data?.data?.map((item,index) => (
                                 <div key={index} className='p-2'>
                                     <div><strong>Customer Name: </strong><i>{item?.customerName}</i></div>
+                                    <div><strong>Client ID: </strong><i>{item?.clientid}</i></div>
                                     <div><strong>Phone Number : </strong><i>{item?.customerPhone}</i></div>
                                     <div><strong>Issue : </strong><i>{item?.issue}</i></div>
-                                    <div><strong>Current Status : </strong><i>{findMaster(item?.status, statusData, 'status')}</i></div>
-                                    <div><strong>Branch : </strong><i>{findMaster(item?.branch, branchData, 'branch')}</i></div>
-                                    <div><strong>State : </strong><i>{findMaster(item?.state, stateData, 'state')}</i></div>
+                                    <div><strong>Current Status : </strong><i>{item?.status}</i></div>
+                                    <div><strong>Branch : </strong><i>{item?.branch}</i></div>
+                                    <div><strong>State : </strong><i>{item?.state}</i></div>
+                                    <div><strong>MFI : </strong><i>{item?.mfi}</i></div>
                                 </div>
                             ))}
                         </div>
