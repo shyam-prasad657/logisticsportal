@@ -218,5 +218,62 @@ router.post('/master/mfi', (req, res) => {
         return res.status(200).json({message : 'MFI added succesfully'})
     })
 })
+router.post('/master/state', (req, res) => {
+    const state = req.query.value;
+    if(!state) {
+        return res.status(400).json({ message: 'State not entered' }); // 400 - Bad Request
+    }
+    let trimmedName = state.trim();
+    const query = 'INSERT into states (state_name) VALUES (?)';
+    db.query(query, [trimmedName], (err, result) => {
+        if(err) {
+            console.log('state error',err);
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `${state} already exist in master` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting State'});
+            }
+        }
+        return res.status(200).json({message : 'State added succesfully'})
+    })
+})
+router.post('/master/status', (req, res) => {
+    const status = req.query.value;
+    if(!status) {
+        return res.status(400).json({ message: 'Status not entered' }); // 400 - Bad Request
+    }
+    let trimmedName = status.trim();
+    const query = 'INSERT into status (status_name) VALUES (?)';
+    db.query(query, [trimmedName], (err, result) => {
+        if(err) {
+            console.log('status error',err);
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `${status} already exist in master` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting Status'});
+            }
+        }
+        return res.status(200).json({message : 'Status added succesfully'})
+    })
+})
+router.post('/master/vendor', (req, res) => {
+    const vendor = req.query.value;
+    if(!vendor) {
+        return res.status(400).json({ message: 'Vendor not entered' }); // 400 - Bad Request
+    }
+    let trimmedName = vendor.trim();
+    const query = 'INSERT into vendor (vendor_name) VALUES (?)';
+    db.query(query, [trimmedName], (err, result) => {
+        if(err) {
+            console.log('vendor error',err);
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `${vendor} already exist in master` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting Vendor'});
+            }
+        }
+        return res.status(200).json({message : 'Vendor added succesfully'})
+    })
+})
 
 module.exports = { postRoutes : router }

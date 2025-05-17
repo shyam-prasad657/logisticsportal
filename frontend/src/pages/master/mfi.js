@@ -5,7 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function Mfi() {
-    const { mfiData, setMfidata} = useData();
+    const { mfiData } = useData();
     const [mfi, setMfi] = useState('');
     const handleAdd = async () => {
         try {
@@ -44,34 +44,34 @@ export default function Mfi() {
                 </table>
                 {/* Modal */}
                 <div className="modal fade" id="mfi-modal" tabIndex="-1" aria-labelledby="ModalLabel-2" aria-hidden="true">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="ModalLabel-2">Add MFI</h1>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                    <div class="row g-3 align-items-center">
-                                        <div class="col-auto">
-                                            <label for="addMFI" class="col-form-label">Add MFI</label>
-                                        </div>
-                                        <div class="col-auto">
-                                            <input onChange={(e) => setMfi(e.target.value)} type="text" id="addMFI" className="form-control" aria-describedby="addMfihelpline" />
-                                        </div>
-                                        <div class="col-auto">
-                                            <span id="addMfihelpline" class="form-text">
-                                            Must be 4-20 characters long.
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleAdd}>Add</button>
-                                </div>
-                                </div>
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h1 className="modal-title fs-5" id="ModalLabel-2">Add MFI</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="addMFI" class="col-form-label">Add MFI</label>
+                            </div>
+                            <div class="col-auto">
+                                <input onChange={(e) => setMfi(e.target.value)} type="text" id="addMFI" className="form-control" aria-describedby="addMfihelpline" />
+                            </div>
+                            <div class="col-auto">
+                                <span id="addMfihelpline" class="form-text">
+                                Must be 4-20 characters long.
+                                </span>
                             </div>
                         </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleAdd}>Add</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     )
