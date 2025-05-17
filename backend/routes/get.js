@@ -21,7 +21,7 @@ const fetchData = (tableName) => {
                 JOIN states st ON branch.state_id = st.id
             `;
         } else {
-        sql = `SELECT * FROM ${tableName} ORDER BY id DESC`;
+        sql = `SELECT * FROM ${tableName} ORDER BY id ASC`;
         }
         db.query(sql, (err, data) => {
             if (err) reject(err);

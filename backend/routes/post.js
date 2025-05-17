@@ -204,4 +204,25 @@ router.post('/import-excel/add', async (req, res) => {
 })
 })
 
+//Update Master Table
+router.post('/master/mfi', (req, res) => {
+    const mfi = req.query.value;
+    if(!mfi) {
+        return res.status(400).json({ message: 'MFI not entered' }); // 400 - Bad Request
+    }
+    let trimmedName = mfi.trim();
+    const query = 'INSERT into mfi (mfi_name) VALUES (?)';
+    db.query(query, [trimmedName], (err, result) => {
+        if(err) {
+            console.log('mfi error',err);
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `${mfi} already exist in master` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting MFI'});
+            }
+        }
+        return res.status(200).json({message : 'MFI added succesfully'})
+    })
+})
+
 module.exports = { postRoutes : router }
