@@ -13,24 +13,15 @@ router.post('/submit', (req, res) => {
     if (!formData.name || !formData.phone || !formData.accountid || !formData.phone || !formData.accountid || !formData.date || !formData.clientid || !formData.mfi || !formData.branch || !formData.state || !formData.vendor) {
         return res.status(400).json({ message: 'Name and phone number are required.' });
     }
-    const checkQuery = `SELECT accountid FROM ${tableName} WHERE accountid = ?`;
-    db.query(checkQuery, [formData.accountid], (err, result) => {
-        if (err) {
-            console.error("Error checking Account IDs", err);
-            return res.status(500).json({ message : "Database error while checking account id"});
-        }
-        if(result.length > 0) {
-            return res.status(400).json({
-                message : "Account ID already exists",
-                duplicate : formData.account
-            })
-        }
-
     const query = `INSERT INTO ${tableName} (customerName, customerPhone, accountid, complaintDate, clientid, mfi, branch, state, vendorName, issue) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.query(query, [formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue], (err, result) => {
+    db.query(query, [formData.name, formData.phone, formData.accountid.trim(), formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
-            return res.status(500).json({ message: 'Database error.' });
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `Account ID ${formData.accountid} already exists` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting Order'});
+            }
         }
         if(result.affectedRows > 0) {
             const historyQuery = 'INSERT INTO order_history (accountid, action, created_at) VALUES (?, ?, NOW())';
@@ -45,7 +36,7 @@ router.post('/submit', (req, res) => {
                 }
             })
         }
-    })})
+    })
 });
 
 //import(excel) - Add Complaint
@@ -70,7 +61,7 @@ router.post('/import-excel/add', async (req, res) => {
             return res.status(400).json({ message: 'Please fill in all mandatory fields (marked with *)' });
         }
     }
-    const accountids = users.map((e) => e['Account ID*']);
+    const accountids = users.map((e) => e['Account ID*'].trim() );
     const temp = checkDuplicates(accountids);
     if( temp.length > 0) {
         return res.status(500).json({message : 'Duplicate Account IDs in input file', duplicates : temp})
@@ -154,6 +145,9 @@ router.post('/import-excel/add', async (req, res) => {
             let value = val[excelCol]; // Get the value from Excel
 
             //Convert State Name to id
+            // if(excelCol === "Account ID*") {
+            //     return value.trim();
+            // }
             if(excelCol === "State*" && state_name.includes(value)) {
                 const temp_state = states.find((e) => e.state_name === value);
                 return temp_state.id
