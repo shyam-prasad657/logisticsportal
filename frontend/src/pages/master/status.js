@@ -15,6 +15,8 @@ export default function Status() {
             console.error(err);
             const x = err?.response?.data?.message || 'Network Error';
             alert(x);
+        } finally {
+            setStatus('');
         }
     }
     console.log(statusData)
@@ -57,7 +59,7 @@ export default function Status() {
                                     <label for="addStatus" class="col-form-label">Add Status</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input onChange={(e) => setStatus(e.target.value)} type="text" id="addStatus" className="form-control" aria-describedby="addStatushelpline" />
+                                    <input onChange={(e) => setStatus(e.target.value)} value = {status} type="text" id="addStatus" className="form-control" aria-describedby="addStatushelpline" />
                                 </div>
                                 <div class="col-auto">
                                     <span id="addStatushelpline" class="form-text">

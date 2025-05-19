@@ -276,4 +276,26 @@ router.post('/master/vendor', (req, res) => {
     })
 })
 
+router.post('/master/branch', (req, res) => {
+    const { branch, state } = req.body;
+    const stateId = Number(state)
+
+    if(!branch || stateId === 0) {
+        return res.status(400).json({ message: 'Branch/State not entered' }); // 400 - Bad Request
+    }
+    let trimmedName = branch.trim();
+    const query = 'INSERT into branch (branch_name, state_id) VALUES (?, ?)';
+    db.query(query, [trimmedName, state], (err, result) => {
+        if(err) {
+            console.log('branch error',err);
+            if(err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ message: `${branch} already exist in master` });
+            } else {
+            return res.status(500).json({ message : 'Error while inserting branch'});
+            }
+        }
+        return res.status(200).json({message : 'Branch added succesfully'})
+    })
+})
+
 module.exports = { postRoutes : router }

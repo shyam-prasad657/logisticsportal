@@ -15,6 +15,8 @@ export default function Vendor() {
             console.error(err);
             const x = err?.response?.data?.message || 'Network Error';
             alert(x);
+        } finally {
+            setVendor('');
         }
     }
     console.log(vendorData)
@@ -57,7 +59,7 @@ export default function Vendor() {
                                     <label for="addStatus" class="col-form-label">Add Vendor</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input onChange={(e) => setVendor(e.target.value)} type="text" id="addStatus" className="form-control" aria-describedby="addStatushelpline" />
+                                    <input onChange={(e) => setVendor(e.target.value)} value = {vendor} type="text" id="addStatus" className="form-control" aria-describedby="addStatushelpline" />
                                 </div>
                                 <div class="col-auto">
                                     <span id="addStatushelpline" class="form-text">

@@ -15,6 +15,8 @@ export default function Mfi() {
             console.error(err);
             const x = err?.response?.data?.message || 'Network Error';
             alert(x);
+        } finally {
+            setMfi('');
         }
     }
     console.log(mfi)
@@ -56,7 +58,7 @@ export default function Mfi() {
                                 <label for="addMFI" class="col-form-label">Add MFI</label>
                             </div>
                             <div class="col-auto">
-                                <input onChange={(e) => setMfi(e.target.value)} type="text" id="addMFI" className="form-control" aria-describedby="addMfihelpline" />
+                                <input onChange={(e) => setMfi(e.target.value)} value = {mfi} type="text" id="addMFI" className="form-control" aria-describedby="addMfihelpline" />
                             </div>
                             <div class="col-auto">
                                 <span id="addMfihelpline" class="form-text">

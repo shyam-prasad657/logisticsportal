@@ -15,6 +15,8 @@ export default function State() {
             console.error(err);
             const x = err?.response?.data?.message || 'Network Error';
             alert(x);
+        } finally {
+            setState('');
         }
     }
     console.log(stateData)
@@ -57,7 +59,7 @@ export default function State() {
                                     <label for="addState" class="col-form-label">Add State</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input onChange={(e) => setState(e.target.value)} type="text" id="addState" className="form-control" aria-describedby="addStatehelpline" />
+                                    <input onChange={(e) => setState(e.target.value)} value={state} type="text" id="addState" className="form-control" aria-describedby="addStatehelpline" />
                                 </div>
                                 <div class="col-auto">
                                     <span id="addStatehelpline" class="form-text">
