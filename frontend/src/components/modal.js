@@ -11,8 +11,8 @@ function DeleteModal({param, delete_event, mfiData, statusData}) {
                 </div>
                 <div className="modal-body">
                     <b>Customer Name : </b>{param?.customerName} <br />
-                    <b>Mfi Name : </b>{findMaster(param?.mfi, mfiData, 'mfi')} <br />
-                    <b>Current Status: </b>{findMaster(param?.status, statusData, 'status')} <br />
+                    <b>Mfi Name : </b>{param?.mfi} <br />
+                    <b>Current Status: </b>{param?.status} <br />
                     <b>Client ID : </b>{param?.clientid} <br />
                     <b>Account ID : </b>{param?.accountid} <br />
                 </div>

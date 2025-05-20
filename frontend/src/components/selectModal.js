@@ -13,11 +13,11 @@ export default function Modal ({ param,pod, history }) {
                 <div className="modal-body">
                     <div className="row">
                     <span className="col-md-8"><b>Customer Name : </b>{param?.customerName}<br /></span>
-                    <span className = "col-md-4"><b>MFI : </b>{findMaster(param?.mfi, mfiData, 'mfi')}<br /></span>
+                    <span className = "col-md-4"><b>MFI : </b>{param?.mfi}<br /></span>
                     <span className = "col-md-8 mt-2"><b>Issue : </b>{param?.issue}<br /></span>
-                    <span className = "col-md-4 mt-2"><b>Vendor : </b>{findMaster(param?.vendorName, vendorData, 'vendor')}<br /></span>
-                    <span className = "col-md-8 mt-2"><b>Branch : </b>{findMaster(param?.branch, branchData, 'branch')}<br /></span>
-                    <span className = "col-md-4 mt-2"><b>State : </b>{findMaster(param?.state, stateData, 'state')}<br /></span>
+                    <span className = "col-md-4 mt-2"><b>Vendor : </b>{param?.vendor}<br /></span>
+                    <span className = "col-md-8 mt-2"><b>Branch : </b>{param?.branch}<br /></span>
+                    <span className = "col-md-4 mt-2"><b>State : </b>{param?.state}<br /></span>
                     </div>
                     <hr />
                     {pod?.pod_1 || pod?.pod_2 || pod?.pod_3 ? (
