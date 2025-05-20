@@ -9,7 +9,7 @@ export default function Vendor() {
     const [vendor, setVendor] = useState('');
     const handleAdd = async () => {
         try {
-            const response = await axios.post(`http://localhost:8081/master/vendor?value=${vendor}`);
+            const response = await axios.post(`http://localhost:8081/master/vendor/add?value=${vendor}`);
             alert(response.data.message);
         } catch (err) {
             console.error(err);
@@ -17,6 +17,19 @@ export default function Vendor() {
             alert(x);
         } finally {
             setVendor('');
+        }
+    }
+    //Delete
+    const handleDelete = async (e) => {
+        try {
+            const response = await axios.delete('http://localhost:8081/master/vendor/delete', {
+                data : { vendor : e }
+            });
+            alert(response.data.message);
+        } catch(err) {
+            console.error(err);
+            const x = err?.response?.data?.message || 'Network Error';
+            alert(x);
         }
     }
     console.log(vendorData)
@@ -37,8 +50,8 @@ export default function Vendor() {
                 <tbody>
                     {vendorData?.length > 0  ? (vendorData.map((item, index) => (
                     <tr key = {index}>
-                    <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal"/></td>
-                    <td scope="row">{index + 1}</td>
+                    <td><MdDelete className='delete-icon' onClick={() => handleDelete(item)}/></td>
+                    <td>{index + 1}</td>
                     <td>{item?.vendor_name}</td>
                     </tr>
                     ))) : (<tr><td colSpan={14} className='text-center'>No data found</td></tr>)}

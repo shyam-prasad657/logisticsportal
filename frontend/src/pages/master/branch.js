@@ -9,9 +9,10 @@ export default function Branch() {
     const [branch, setBranch] = useState('');
     const [state, setState] = useState(0);
 
+    //Add
     const handleAdd = async () => {
         try {
-            const response = await axios.post('http://localhost:8081/master/branch', {branch : branch, state : state});
+            const response = await axios.post('http://localhost:8081/master/branch/add', {branch : branch, state : state});
             alert(response.data.message);
         } catch (err) {
             console.error(err);
@@ -20,6 +21,20 @@ export default function Branch() {
         } finally {
             setBranch('');
             setState(0);
+        }
+    }
+
+    //Delete
+    const handleDelete = async (e) => {
+        try {
+            const response = await axios.delete('http://localhost:8081/master/branch/delete', {
+                data : { branch : e }
+            });
+            alert(response.data.message);
+        } catch(err) {
+            console.error(err);
+            const x = err?.response?.data?.message || 'Network Error';
+            alert(x);
         }
     }
     console.log(branch,state)
@@ -41,8 +56,8 @@ export default function Branch() {
                 <tbody>
                     {branchData?.length > 0  ? (branchData.map((item, index) => (
                     <tr key = {index}>
-                    <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal"/></td>
-                    <td scope="row">{index + 1}</td>
+                    <td><MdDelete className='delete-icon' onClick={() => handleDelete(item)}/></td>
+                    <td>{index + 1}</td>
                     <td>{item?.branch_name}</td>
                     <td>{item?.state}</td>
                     </tr>

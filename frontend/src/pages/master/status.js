@@ -9,7 +9,7 @@ export default function Status() {
     const [status, setStatus] = useState('');
     const handleAdd = async () => {
         try {
-            const response = await axios.post(`http://localhost:8081/master/status?value=${status}`);
+            const response = await axios.post(`http://localhost:8081/master/status/add?value=${status}`);
             alert(response.data.message);
         } catch (err) {
             console.error(err);
@@ -17,6 +17,20 @@ export default function Status() {
             alert(x);
         } finally {
             setStatus('');
+        }
+    }
+
+    //Delete
+    const handleDelete = async (e) => {
+        try {
+            const response = await axios.delete('http://localhost:8081/master/status/delete', {
+                data : { status : e }
+            });
+            alert(response.data.message);
+        } catch(err) {
+            console.error(err);
+            const x = err?.response?.data?.message || 'Network Error';
+            alert(x);
         }
     }
     console.log(statusData)
@@ -37,8 +51,8 @@ export default function Status() {
                 <tbody>
                     {statusData?.length > 0  ? (statusData.map((item, index) => (
                     <tr key = {index}>
-                    <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal"/></td>
-                    <td scope="row">{index + 1}</td>
+                    <td><MdDelete className='delete-icon'onClick={() => handleDelete(item)}/></td>
+                    <td>{index + 1}</td>
                     <td>{item?.status_name}</td>
                     </tr>
                     ))) : (<tr><td colSpan={14} className='text-center'>No data found</td></tr>)}

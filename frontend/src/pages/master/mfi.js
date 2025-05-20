@@ -7,9 +7,10 @@ import axios from 'axios';
 export default function Mfi() {
     const { mfiData } = useData();
     const [mfi, setMfi] = useState('');
+    //Add
     const handleAdd = async () => {
         try {
-            const response = await axios.post(`http://localhost:8081/master/mfi?value=${mfi}`);
+            const response = await axios.post(`http://localhost:8081/master/mfi/add?value=${mfi}`);
             alert(response.data.message);
         } catch (err) {
             console.error(err);
@@ -19,7 +20,21 @@ export default function Mfi() {
             setMfi('');
         }
     }
-    console.log(mfi)
+    console.log(mfi);
+
+    //Delete
+    const handleDelete = async (e) => {
+        try {
+            const response = await axios.delete('http://localhost:8081/master/mfi/delete', {
+                data : { mfi : e }
+            });
+            alert(response.data.message);
+        } catch(err) {
+            console.error(err);
+            const x = err?.response?.data?.message || 'Network Error';
+            alert(x);
+        }
+    }
     return(
         <div className="container-fluid" id = "master-page">
             <div className="container master">
@@ -37,8 +52,8 @@ export default function Mfi() {
                 <tbody>
                     {mfiData?.length > 0  ? (mfiData.map((item, index) => (
                     <tr key = {index}>
-                    <td><MdDelete className='delete-icon'data-bs-toggle="modal" data-bs-target="#exampleModal"/></td>
-                    <td scope="row">{index + 1}</td>
+                    <td><MdDelete className='delete-icon' onClick={() => handleDelete(item)}/></td>
+                    <td>{index + 1}</td>
                     <td>{item?.mfi_name}</td>
                     </tr>
                     ))) : (<tr><td colSpan={14} className='text-center'>No data found</td></tr>)}

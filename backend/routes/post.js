@@ -199,7 +199,7 @@ router.post('/import-excel/add', async (req, res) => {
 })
 
 //Update Master Table
-router.post('/master/mfi', (req, res) => {
+router.post('/master/mfi/add', (req, res) => {
     const mfi = req.query.value;
     if(!mfi) {
         return res.status(400).json({ message: 'MFI not entered' }); // 400 - Bad Request
@@ -218,7 +218,7 @@ router.post('/master/mfi', (req, res) => {
         return res.status(200).json({message : 'MFI added succesfully'})
     })
 })
-router.post('/master/state', (req, res) => {
+router.post('/master/state/add', (req, res) => {
     const state = req.query.value;
     if(!state) {
         return res.status(400).json({ message: 'State not entered' }); // 400 - Bad Request
@@ -237,7 +237,7 @@ router.post('/master/state', (req, res) => {
         return res.status(200).json({message : 'State added succesfully'})
     })
 })
-router.post('/master/status', (req, res) => {
+router.post('/master/status/add', (req, res) => {
     const status = req.query.value;
     if(!status) {
         return res.status(400).json({ message: 'Status not entered' }); // 400 - Bad Request
@@ -256,7 +256,7 @@ router.post('/master/status', (req, res) => {
         return res.status(200).json({message : 'Status added succesfully'})
     })
 })
-router.post('/master/vendor', (req, res) => {
+router.post('/master/vendor/add', (req, res) => {
     const vendor = req.query.value;
     if(!vendor) {
         return res.status(400).json({ message: 'Vendor not entered' }); // 400 - Bad Request
@@ -276,7 +276,7 @@ router.post('/master/vendor', (req, res) => {
     })
 })
 
-router.post('/master/branch', (req, res) => {
+router.post('/master/branch/add', (req, res) => {
     const { branch, state } = req.body;
     const stateId = Number(state)
 
