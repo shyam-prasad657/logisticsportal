@@ -5,8 +5,7 @@ import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { useData } from '../components/fetchdata';
-import DeleteModal from '../components/modal';
-import Modal from '../components/selectModal';
+import { DeleteModal, Modal } from '../components/modal';
 import useSWR, { mutate } from 'swr';
 
     export default function Reports(){
