@@ -60,7 +60,7 @@ export default function Modal ({ param,pod, history }) {
                     {history?.map((e, index) => (
                         <tr key={index} className='p-2'>
                         <td>{e.action}</td>
-                        <td>{findMaster(e.status, statusData, 'status')}</td>
+                        <td>{e.status_name}</td>
                         <td>{e.remarks}</td>
                         <td>{e.created_at}</td>
                         </tr>

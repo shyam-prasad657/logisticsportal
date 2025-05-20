@@ -271,7 +271,14 @@ router.get('/getValue', (req, res) => {
 router.get('/reports/history' ,(req, res) => {
     const id = req.query.id;
     console.log('ID : ',id);
-    const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,action,remarks,status from order_history WHERE accountid = ? ORDER BY id DESC`;
+    const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,
+    action,remarks,
+    s.status_name 
+    FROM
+        order_history 
+    JOIN
+        status s ON order_history.status = s.id 
+    WHERE accountid = ? ORDER BY order_history.id DESC`;
     db.query(query, [id], (err, result) => {
         if(err) {
             return res.status(500).json({message : 'Database Error while fetching history'})
