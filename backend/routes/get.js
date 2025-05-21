@@ -16,7 +16,8 @@ const fetchData = (tableName) => {
                 SELECT 
                     branch.id, 
                     branch.branch_name, 
-                    st.state_name AS state 
+                    st.state_name AS state,
+                    branch.state_id
                 FROM branch
                 JOIN states st ON branch.state_id = st.id
             `;

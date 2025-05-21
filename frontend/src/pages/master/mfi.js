@@ -135,7 +135,7 @@ export default function Mfi() {
                             </div>
                             <div className="col-auto">
                                 <span id="editMfihelpline" className="form-text">
-                                Note : changes made will affect the old cases also.
+                                Note : Changes made will affect the old cases also.
                                 </span>
                             </div>
                         </div>

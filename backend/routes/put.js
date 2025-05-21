@@ -163,4 +163,100 @@ router.put('/master/mfi/edit', (req, res) => {
     })
 })
 
+//Branch
+router.put('/master/branch/edit', (req, res) => {
+    const {id, name, state } = req.body;
+    let trimmedName = name.trim();
+    console.log(id, name);
+    const checkQuery = 'SELECT * from branch WHERE branch_name = ? AND state_id = ?';
+    db.query(checkQuery, [trimmedName, state], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Error while checking branch'});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({message : `Branch & State already exists`});
+        } else {
+            const query = 'UPDATE branch SET branch_name = ?, state_id = ? WHERE id = ?';
+            db.query(query, [trimmedName,state, id], (editErr, editResult) => {
+                if(editErr) {
+                    return res.status(500).json({message : 'Error while editing branch'});
+                }
+                return res.status(200).json({message : 'Branch updated sucessfully'})
+            })
+        }
+    })
+})
+
+//Vendor
+router.put('/master/vendor/edit', (req, res) => {
+    const {id, name } = req.body;
+    let trimmedName = name.trim();
+    console.log(id, name);
+    const checkQuery = 'SELECT * from vendor WHERE vendor_name = ?';
+    db.query(checkQuery, [trimmedName], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Error while checking Vendor'});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({message : `Vendor ${trimmedName} already exists`});
+        } else {
+            const query = 'UPDATE vendor SET vendor_name = ? WHERE id = ?';
+            db.query(query, [trimmedName, id], (editErr, editResult) => {
+                if(editErr) {
+                    return res.status(500).json({message : 'Error while editing vendor'});
+                }
+                return res.status(200).json({message : 'Vendor updated sucessfully'})
+            })
+        }
+    })
+})
+
+//Status
+router.put('/master/status/edit', (req, res) => {
+    const {id, name } = req.body;
+    let trimmedName = name.trim();
+    console.log(id, name);
+    const checkQuery = 'SELECT * from status WHERE status_name = ?';
+    db.query(checkQuery, [trimmedName], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Error while checking status'});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({message : `Status ${trimmedName} already exists`});
+        } else {
+            const query = 'UPDATE status SET status_name = ? WHERE id = ?';
+            db.query(query, [trimmedName, id], (editErr, editResult) => {
+                if(editErr) {
+                    return res.status(500).json({message : 'Error while editing status'});
+                }
+                return res.status(200).json({message : 'Status updated sucessfully'})
+            })
+        }
+    })
+})
+
+//State
+router.put('/master/state/edit', (req, res) => {
+    const {id, name } = req.body;
+    let trimmedName = name.trim();
+    console.log(id, name);
+    const checkQuery = 'SELECT * from states WHERE state_name = ?';
+    db.query(checkQuery, [trimmedName], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Error while checking state'});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({message : `Status ${trimmedName} already exists`});
+        } else {
+            const query = 'UPDATE states SET state_name = ? WHERE id = ?';
+            db.query(query, [trimmedName, id], (editErr, editResult) => {
+                if(editErr) {
+                    return res.status(500).json({message : 'Error while editing state'});
+                }
+                return res.status(200).json({message : 'State updated sucessfully'})
+            })
+        }
+    })
+})
+
 module.exports = { putRoutes : router }
