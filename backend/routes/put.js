@@ -138,4 +138,29 @@ router.put('/import-excel/update', async (req, res) => {
     })
 })
 
+//Edit Master
+//MFI
+router.put('/master/mfi/edit', (req, res) => {
+    const {id, name } = req.body;
+    let trimmedName = name.trim();
+    console.log(id, name);
+    const checkQuery = 'SELECT * from mfi WHERE mfi_name = ?';
+    db.query(checkQuery, [trimmedName], (err, result) => {
+        if(err) {
+            return res.status(500).json({message : 'Error while checking mfi'});
+        }
+        if(result.length > 0) {
+            return res.status(400).json({message : `MFI ${trimmedName} already exists`});
+        } else {
+            const query = 'UPDATE mfi SET mfi_name = ? WHERE id = ?';
+            db.query(query, [trimmedName, id], (editErr, editResult) => {
+                if(editErr) {
+                    return res.status(500).json({message : 'Error while editing mfi'});
+                }
+                return res.status(200).json({message : 'MFI updated sucessfully'})
+            })
+        }
+    })
+})
+
 module.exports = { putRoutes : router }

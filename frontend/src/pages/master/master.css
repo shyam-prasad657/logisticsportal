@@ -16,8 +16,17 @@
     padding : 20px 10px;
 }
 
-.delete-icon{
-    color : red;
+#icons-area{
+    display: flex;
+    align-items: center;
+}
+
+.icon{
     font-size:x-large;
     margin : 0;
 }
+
+#delete {
+    color: red;
+}
+
