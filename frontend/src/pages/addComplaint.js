@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstancs';
 import './addComplaint.css';
 import * as XLSX from "xlsx";
 import { useData } from '../components/fetchdata';
@@ -35,7 +35,7 @@ export default function Complaint(){
     e.preventDefault();
     console.log(formData.name, formData.phone, formData.accountid, formData.date, formData.clientid, formData.mfi, formData.branch, formData.state, formData.vendor, formData.issue)
     try {
-      const response = await axios.post('http://localhost:8081/submit', {formData});
+      const response = await axiosInstance.post('/submit', {formData});
       alert(response.data.message);
       window.location.reload();
     } catch (error) {
@@ -84,7 +84,7 @@ export default function Complaint(){
    const handleUpload = async () => {
     console.log("Uploading Data: ",excelData); //log data in console
     try {
-        const response = await axios.post("http://localhost:8081/import-excel/add", { users : excelData });
+        const response = await axiosInstance.post("/import-excel/add", { users : excelData });
         alert(response.data.message);
         window.location.reload();
     } catch(error) {

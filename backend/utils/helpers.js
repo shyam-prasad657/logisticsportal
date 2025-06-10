@@ -1,3 +1,5 @@
+require("dotenv").config(); // Load secret key from .env
+
 // Helper function to build filter conditions based on query parameters.
 function buildFilterConditions(query) {
     let conditions = [];
@@ -59,4 +61,22 @@ function checkDuplicates (input) {
     return temp;
 }
 
-module.exports = { buildFilterConditions, updateImportQuery, checkDuplicates }
+function authenticateToken(req, res, next) {
+    const header = req.headers['authorization'];
+    console.log(header)
+    if (!header) {
+        return res.status(401).send('Authorization header missing');
+    }
+    //Authorization header format 'Bearer <token>'
+    const token = header.split(' ')[1];
+    if(!token) {
+        return res.status(401).send('No Token Used ')
+    }
+    if(process.env.AUTH_KEY === token) {
+        return next();
+    } else {
+        return res.status(401).json({message : 'Invalid Token'});
+    }
+}
+
+module.exports = { buildFilterConditions, updateImportQuery, checkDuplicates, authenticateToken }

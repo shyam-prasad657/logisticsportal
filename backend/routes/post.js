@@ -3,10 +3,10 @@ const db = require('../config/db');
 const router = express.Router();
 const tableName = '`test_userdb`';
 const { fetchStates, fetchMFI, fetchBranch, fetchVendor } = require('./get');
-const { checkDuplicates } = require('../utils/helpers');
+const { checkDuplicates, authenticateToken } = require('../utils/helpers');
 
 // API Route to Handle Data Submission
-router.post('/submit', (req, res) => {
+router.post('/submit',authenticateToken, (req, res) => {
     // const {name, phone, accountid, date, clientid, mfi, branch, state, vendor, issue} = req.body;
     const {formData} = req.body
     
@@ -40,7 +40,7 @@ router.post('/submit', (req, res) => {
 });
 
 //import(excel) - Add Complaint
-router.post('/import-excel/add', async (req, res) => {
+router.post('/import-excel/add',authenticateToken, async (req, res) => {
     const users = req.body.users;
     const states = await fetchStates();
     const vendor = await fetchVendor();
@@ -199,7 +199,7 @@ router.post('/import-excel/add', async (req, res) => {
 })
 
 //Update Master Table
-router.post('/master/mfi/add', (req, res) => {
+router.post('/master/mfi/add',authenticateToken, (req, res) => {
     const mfi = req.query.value;
     if(!mfi) {
         return res.status(400).json({ message: 'MFI not entered' }); // 400 - Bad Request
@@ -218,7 +218,7 @@ router.post('/master/mfi/add', (req, res) => {
         return res.status(200).json({message : 'MFI added succesfully'})
     })
 })
-router.post('/master/state/add', (req, res) => {
+router.post('/master/state/add',authenticateToken, (req, res) => {
     const state = req.query.value;
     if(!state) {
         return res.status(400).json({ message: 'State not entered' }); // 400 - Bad Request
@@ -237,7 +237,7 @@ router.post('/master/state/add', (req, res) => {
         return res.status(200).json({message : 'State added succesfully'})
     })
 })
-router.post('/master/status/add', (req, res) => {
+router.post('/master/status/add',authenticateToken, (req, res) => {
     const status = req.query.value;
     if(!status) {
         return res.status(400).json({ message: 'Status not entered' }); // 400 - Bad Request
@@ -256,7 +256,7 @@ router.post('/master/status/add', (req, res) => {
         return res.status(200).json({message : 'Status added succesfully'})
     })
 })
-router.post('/master/vendor/add', (req, res) => {
+router.post('/master/vendor/add',authenticateToken, (req, res) => {
     const vendor = req.query.value;
     if(!vendor) {
         return res.status(400).json({ message: 'Vendor not entered' }); // 400 - Bad Request
@@ -276,7 +276,7 @@ router.post('/master/vendor/add', (req, res) => {
     })
 })
 
-router.post('/master/branch/add', (req, res) => {
+router.post('/master/branch/add',authenticateToken, (req, res) => {
     const { branch, state } = req.body;
     const stateId = Number(state)
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './update.css';
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstancs';
 import * as XLSX from "xlsx";
 import { useData } from '../components/fetchdata';
 import useSWR, { mutate } from 'swr';
@@ -25,7 +25,7 @@ function Update() {
         // e.preventDefault();
         try {
             console.log('Payload:', { accountId, updatedStatus, remarks });
-            const response = await axios.put('http://localhost:8081/update-status', { accountId, updatedStatus, remarks });
+            const response = await axiosInstance.put('/update-status', { accountId, updatedStatus, remarks });
             // if(response.data.message) {
             //     setData(); //Mutate data by swr
             // }
@@ -85,7 +85,7 @@ function Update() {
     const handleImport = async () => {
         console.log("Uploading Data", excelData);
         try {
-            const response = await axios.put("http://localhost:8081/import-excel/update", {update : excelData});
+            const response = await axiosInstance.put("/import-excel/update", {update : excelData});
             // if(response.data.message) {
             //     setData(); //Mutate data by swr
             // }

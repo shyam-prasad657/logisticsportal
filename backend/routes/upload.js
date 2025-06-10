@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
 const multer = require('multer');
+const { authenticateToken } = require('../utils/helpers');
 const tableName = '`test_userdb`';
 
 //Multer setup
@@ -52,7 +53,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage : storage})
 
-router.put('/upload', upload.single('dcfile'), (req,res) => {
+router.put('/upload',authenticateToken, upload.single('dcfile'), (req,res) => {
     const accountId = req.body.accountId;
     const filePath = `uploads/dc/${req.file.filename}`;
     console.log('backend console filepath: ',filePath);
@@ -78,7 +79,7 @@ const multiUpload = upload.fields([
     { name : 'pod2', maxCount:1 },
     { name : 'pod3', maxCount:1 }
 ])
-router.post('/upload-pod', multiUpload, (req, res) => {
+router.post('/upload-pod',authenticateToken, multiUpload, (req, res) => {
     const accountId = req.body.accountId;
     const remarks = req.body.remarks;
     let deliveryDate = req.body.deliveryDate;

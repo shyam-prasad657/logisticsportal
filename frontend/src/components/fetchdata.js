@@ -1,6 +1,9 @@
+import { createContext, useContext } from 'react';
 import useSWR from 'swr';
 
-export const useData = () => {
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
     const fetcher = (url) => fetch(url).then((res) => res.json());
     const {data : data, mutate : setData } = useSWR('http://localhost:8081/test-userdb', fetcher);
     const {data : stateData, mutate : setStatedata } = useSWR('http://localhost:8081/states', fetcher);
@@ -9,8 +12,14 @@ export const useData = () => {
     const {data : vendorData, mutate : setVendordata } = useSWR('http://localhost:8081/vendor', fetcher);
     const {data : mfiData, mutate : setMfidata } = useSWR('http://localhost:8081/mfi', fetcher);
 
-    return {data, setData, statusData, setStatusdata, stateData, setStatedata, branchData, setBranchdata, mfiData, setMfidata, vendorData, setVendordata}
+    return (
+        <AuthContext.Provider value = {{data, setData, statusData, setStatusdata, stateData, setStatedata, branchData, setBranchdata, mfiData, setMfidata, vendorData, setVendordata}}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
+
+export const useData = () => useContext(AuthContext);
 
 export const findMaster = (name, masterData, field) => {
     const x = masterData?.find((r) => r.id === name)

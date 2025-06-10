@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { complaints } from '../mockData/mockData';
 import './podUpload.css';
 import useSWR from 'swr';
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstancs';
 
 export default function PODUpload() {
     const [accountId, setAccountiD] = useState('');
@@ -18,7 +18,6 @@ export default function PODUpload() {
     const handleFind = (e) => {
         console.log(e.target.value);
         setAccountiD(e.target.value);
-        // mutate(`http://localhost:8081/getValue?id=${accountId}`);
         if(error) {
             console.error('Get Error in Update Screen',error)
         }
@@ -41,7 +40,7 @@ export default function PODUpload() {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8081/upload-pod/`,formData,
+            const response = await axiosInstance.post('/upload-pod',formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 }

@@ -1,12 +1,12 @@
 const express = require('express');
 const db = require('../config/db');
 const { fetchStatus } = require('./get');
-const { updateImportQuery, checkDuplicates } = require('../utils/helpers');
+const { updateImportQuery, checkDuplicates, authenticateToken } = require('../utils/helpers');
 const router = express.Router();
 const tableName = '`test_userdb`';
   
   // API to update status
-  router.put('/update-status', async (req, res) => {
+  router.put('/update-status',authenticateToken, async (req, res) => {
     const  { accountId, remarks, updatedStatus} = req.body;
     console.log('Request Body:', req.body);
     if(!accountId || !updatedStatus) {
@@ -36,7 +36,7 @@ const tableName = '`test_userdb`';
 })
 
 //Import Excel - update-status
-router.put('/import-excel/update', async (req, res) => {
+router.put('/import-excel/update',authenticateToken, async (req, res) => {
     const update = req.body.update;
     if(!update || update.length === 0) {
         return res.status(400).json({message : "No Data Received"})
@@ -140,7 +140,7 @@ router.put('/import-excel/update', async (req, res) => {
 
 //Edit Master
 //MFI
-router.put('/master/mfi/edit', (req, res) => {
+router.put('/master/mfi/edit',authenticateToken, (req, res) => {
     const {id, name } = req.body;
     let trimmedName = name.trim();
     console.log(id, name);
@@ -164,7 +164,7 @@ router.put('/master/mfi/edit', (req, res) => {
 })
 
 //Branch
-router.put('/master/branch/edit', (req, res) => {
+router.put('/master/branch/edit',authenticateToken, (req, res) => {
     const {id, name, state } = req.body;
     let trimmedName = name.trim();
     console.log(id, name);
@@ -188,7 +188,7 @@ router.put('/master/branch/edit', (req, res) => {
 })
 
 //Vendor
-router.put('/master/vendor/edit', (req, res) => {
+router.put('/master/vendor/edit',authenticateToken, (req, res) => {
     const {id, name } = req.body;
     let trimmedName = name.trim();
     console.log(id, name);
@@ -212,7 +212,7 @@ router.put('/master/vendor/edit', (req, res) => {
 })
 
 //Status
-router.put('/master/status/edit', (req, res) => {
+router.put('/master/status/edit',authenticateToken, (req, res) => {
     const {id, name } = req.body;
     let trimmedName = name.trim();
     console.log(id, name);
@@ -236,7 +236,7 @@ router.put('/master/status/edit', (req, res) => {
 })
 
 //State
-router.put('/master/state/edit', (req, res) => {
+router.put('/master/state/edit',authenticateToken, (req, res) => {
     const {id, name } = req.body;
     let trimmedName = name.trim();
     console.log(id, name);

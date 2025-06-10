@@ -1,9 +1,9 @@
 import { complaints, status, state } from '../mockData/mockData';
 import './reports.css';
 import { MdDelete } from "react-icons/md";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstancs';
 import { useData } from '../components/fetchdata';
 import { DeleteModal, Modal } from '../components/modal';
 import useSWR, { mutate } from 'swr';
@@ -28,7 +28,7 @@ import useSWR, { mutate } from 'swr';
         )
             const fetchData = async (page) => {
                 try {
-                    const response = await axios.get('http://localhost:8081/users', {
+                    const response = await axiosInstance.get('/users', {
                         params : {
                             page,
                             status : filters.status || undefined,
@@ -125,7 +125,7 @@ import useSWR, { mutate } from 'swr';
 
         const confirmDelete = async () => {
             try {
-                const response = await axios.delete(`http://localhost:8081/api/delete/${selectedItem.accountid}`)
+                const response = await axiosInstance.delete(`/api/delete/${selectedItem.accountid}`)
                 alert(response.data.message)
                 console.log(selectedItem.accountid)
                 fetchData(currentPage + 1);

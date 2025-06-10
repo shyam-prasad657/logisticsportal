@@ -1,10 +1,11 @@
 const express = require('express');
 const db = require('../config/db');
+const { authenticateToken } = require('../utils/helpers');
 const router = express.Router();
 const tableName = '`test_userdb`';
 
 //Delete Order
-router.delete('/api/delete/:id', (req, res) => {
+router.delete('/api/delete/:id',authenticateToken, (req, res) => {
     const id = req.params.id;
     // Validate the ID
     if (!id) {
@@ -43,7 +44,7 @@ router.delete('/api/delete/:id', (req, res) => {
 
 //Delete Master
 //MFI
-router.delete('/master/mfi/delete', (req, res) => {
+router.delete('/master/mfi/delete',authenticateToken, (req, res) => {
     const { mfi } = req.body;
     console.log(mfi);
     db.query('SELECT * from test_userdb WHERE mfi = ?',[mfi.id], (err, result) => {
@@ -66,7 +67,7 @@ router.delete('/master/mfi/delete', (req, res) => {
 })
 
 //Branch
-router.delete('/master/branch/delete', (req, res) => {
+router.delete('/master/branch/delete',authenticateToken, (req, res) => {
     const { branch } = req.body;
     console.log(branch);
     db.query('SELECT * from test_userdb WHERE branch = ?',[branch.id], (err, result) => {
@@ -89,7 +90,7 @@ router.delete('/master/branch/delete', (req, res) => {
 })
 
 //State
-router.delete('/master/state/delete', (req, res) => {
+router.delete('/master/state/delete',authenticateToken, (req, res) => {
     const { state } = req.body;
     console.log(state);
     db.query('SELECT * from branch WHERE state_id = ?',[state.id], (err, result) => {
@@ -112,7 +113,7 @@ router.delete('/master/state/delete', (req, res) => {
 })
 
 //Vendor
-router.delete('/master/vendor/delete', (req, res) => {
+router.delete('/master/vendor/delete',authenticateToken, (req, res) => {
     const { vendor } = req.body;
     console.log(vendor);
     db.query('SELECT * from test_userdb WHERE vendorName = ?',[vendor.id], (err, result) => {
@@ -135,7 +136,7 @@ router.delete('/master/vendor/delete', (req, res) => {
 })
 
 //Status
-router.delete('/master/status/delete', (req, res) => {
+router.delete('/master/status/delete',authenticateToken, (req, res) => {
     const { status } = req.body;
     console.log(status);
     db.query('SELECT * from order_history WHERE status = ?',[status.id], (err, result) => {

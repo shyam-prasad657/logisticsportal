@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require("dotenv").config(); // Load secret key from .env
 const { getRoutes } = require('./routes/get');
 const { postRoutes } = require('./routes/post');
 const { putRoutes } = require('./routes/put');
@@ -10,7 +9,10 @@ const { uploadRoutes } = require('./routes/upload');
 const path = require('path');
 
 const app = express();
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',  // Explicitly allow your frontend URL
+    credentials: true,
+}))
 app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 

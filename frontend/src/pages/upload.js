@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { complaints } from '../mockData/mockData';
 import './upload.css';
 import useSWR from 'swr';
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstancs';
 
 export default function Upload() {
     const [accountId, setAccountiD] = useState('');
@@ -26,7 +26,7 @@ export default function Upload() {
         formData.append("dcfile", file);
         console.log(formData)
         try {
-            const response = await axios.put(`http://localhost:8081/upload`,formData);
+            const response = await axiosInstance.put('/upload',formData);
             const success = response?.data?.message
             alert(success)
             setAccountiD('');
