@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('../config/db');
-const { buildFilterConditions } = require('../utils/helpers');
+const { buildFilterConditions, authenticateToken } = require('../utils/helpers');
 const ExcelJS = require('exceljs');
 const { Parser } = require('json2csv');
 const PDFDocument = require('pdfkit');
@@ -32,7 +32,7 @@ const fetchData = (tableName) => {
 };
 
 // Define routes
-router.get('/test-userdb', async (req, res) => {
+router.get('/test-userdb',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('test_userdb');
         res.json(data);
@@ -41,7 +41,7 @@ router.get('/test-userdb', async (req, res) => {
     }
 });
 
-router.get('/status', async (req, res) => {
+router.get('/status',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('status');
         res.json(data);
@@ -50,7 +50,7 @@ router.get('/status', async (req, res) => {
     }
 });
 
-router.get('/states', async (req, res) => {
+router.get('/states',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('states');
         res.json(data);
@@ -59,7 +59,7 @@ router.get('/states', async (req, res) => {
     }
 });
 
-router.get('/mfi', async (req, res) => {
+router.get('/mfi',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('mfi');
         res.json(data);
@@ -68,7 +68,7 @@ router.get('/mfi', async (req, res) => {
     }
 });
 
-router.get('/branch', async (req, res) => {
+router.get('/branch',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('branch');
         res.json(data);
@@ -77,7 +77,7 @@ router.get('/branch', async (req, res) => {
     }
 });
 
-router.get('/vendor', async (req, res) => {
+router.get('/vendor',authenticateToken, async (req, res) => {
     try {
         const data = await fetchData('vendor');
         res.json(data);
@@ -88,7 +88,7 @@ router.get('/vendor', async (req, res) => {
 
 //Dynamically calling method
 //report.js
-router.get('/users', (req, res, next) => {
+router.get('/users',authenticateToken, (req, res, next) => {
     let page = parseInt(req.query.page) || 1;
     const limit = 10; //express-paginate
     const offset = (page - 1) * limit; //automatically computed
@@ -146,7 +146,7 @@ router.get('/users', (req, res, next) => {
 })
 
 // GET /export endpoint to export data in Excel, CSV, or PDF formats.
-router.get('/export', (req, res) => {
+router.get('/export',authenticateToken, (req, res) => {
     const type = req.query.type; // Expected values: 'excel', 'csv', 'pdf'
     const {conditions, valueParams} = buildFilterConditions(req.query);
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : '';
@@ -228,7 +228,7 @@ router.get('/export', (req, res) => {
 })
 
 //Used under update.js
-router.get('/getValue', (req, res) => {
+router.get('/getValue',authenticateToken, (req, res) => {
     const id = req.query.id;
     // console.log(id)
     const query = `SELECT
@@ -269,7 +269,7 @@ router.get('/getValue', (req, res) => {
 })
 
 //Under report.js to fetch order wise history
-router.get('/reports/history' ,(req, res) => {
+router.get('/reports/history' ,authenticateToken,(req, res) => {
     const id = req.query.id;
     console.log('ID : ',id);
     const query = `SELECT DATE_FORMAT(created_at, '%d/%m/%Y %H:%i:%s') as created_at,

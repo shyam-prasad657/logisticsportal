@@ -3,7 +3,7 @@ import './reports.css';
 import { MdDelete } from "react-icons/md";
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import axiosInstance from '../components/axiosInstancs';
+import axiosInstance from '../components/axiosInstance';
 import { useData } from '../components/fetchdata';
 import { DeleteModal, Modal } from '../components/modal';
 import useSWR, { mutate } from 'swr';

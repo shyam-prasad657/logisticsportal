@@ -1,10 +1,11 @@
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
+import axiosInstance from './axiosInstance';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const fetcher = (url) => fetch(url).then((res) => res.json());
+    const fetcher = (url) => axiosInstance(url).then((res) => res.json());
     const {data : data, mutate : setData } = useSWR('http://localhost:8081/test-userdb', fetcher);
     const {data : stateData, mutate : setStatedata } = useSWR('http://localhost:8081/states', fetcher);
     const {data : branchData, mutate : setBranchdata } = useSWR('http://localhost:8081/branch', fetcher);

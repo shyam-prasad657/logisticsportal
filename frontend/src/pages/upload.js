@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { complaints } from '../mockData/mockData';
 import './upload.css';
 import useSWR from 'swr';
-import axiosInstance from '../components/axiosInstancs';
+import axiosInstance from '../components/axiosInstance';
 
 export default function Upload() {
     const [accountId, setAccountiD] = useState('');

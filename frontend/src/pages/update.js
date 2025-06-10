@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './update.css';
-import axiosInstance from '../components/axiosInstancs';
+import axiosInstance from '../components/axiosInstance';
 import * as XLSX from "xlsx";
 import { useData } from '../components/fetchdata';
 import useSWR, { mutate } from 'swr';

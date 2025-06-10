@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(config => {
-    const token = 12345;
+    const token = 1234;
     if(token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

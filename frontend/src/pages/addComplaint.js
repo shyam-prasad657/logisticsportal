@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axiosInstance from '../components/axiosInstancs';
+import axiosInstance from '../components/axiosInstance';
 import './addComplaint.css';
 import * as XLSX from "xlsx";
 import { useData } from '../components/fetchdata';
